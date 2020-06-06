@@ -112,8 +112,8 @@ const Header = ({
                     )}
                   >
                     <li>
-                      <Link to="#0" onClick={closeMenu}>
-                        Documentation
+                      <Link to="/maps" onClick={closeMenu}>
+                        Maps
                       </Link>
                     </li>
                   </ul>
