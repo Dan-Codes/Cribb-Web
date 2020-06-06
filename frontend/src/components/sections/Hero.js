@@ -6,6 +6,7 @@ import Button from "../elements/Button";
 import Image from "../elements/Image";
 import Modal from "../elements/Modal";
 import Input from "../elements/Input";
+import Bucket from "./partials/bucket";
 
 const propTypes = {
   ...SectionProps.types,
@@ -101,7 +102,6 @@ const Hero = ({
               labelHidden
               hasIcon="right"
               placeholder="Find a property"
-              onClick=""
             >
               <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -111,6 +111,8 @@ const Hero = ({
               </svg>
             </Input>
           </div>
+
+          <Bucket />
 
           {/* Video  */}
           {/* <div
