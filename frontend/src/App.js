@@ -10,6 +10,7 @@ import LayoutDefault from "./layouts/LayoutDefault";
 // Views
 import Home from "./views/Home";
 import Maps from "./views/Maps";
+import AddCribb from "./views/AddCribb";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -41,6 +42,12 @@ const App = () => {
             exact
             path="/maps"
             component={Maps}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            exact
+            path="/addcribb"
+            component={AddCribb}
             layout={LayoutDefault}
           />
         </Switch>

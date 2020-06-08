@@ -116,6 +116,11 @@ const Header = ({
                         Maps
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/addcribb" onClick={closeMenu}>
+                        Add a Cribb
+                      </Link>
+                    </li>
                   </ul>
                   {!hideSignin && (
                     <ul className="list-reset header-nav-right">

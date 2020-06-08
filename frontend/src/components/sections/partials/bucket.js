@@ -15,7 +15,6 @@ class bucket extends Component {
       .then((buck) => this.setState({ buck }));
     console.log(this.state.buck);
   }
-
   render() {
     console.log("test");
     return (
