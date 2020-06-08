@@ -5,6 +5,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import parseAddress from "parse-address";
 
 import { SectionProps } from "../../../utils/SectionProps";
 import Input from "../../elements/Input";
@@ -15,18 +16,45 @@ import GenericSection from "../../../../src/components/sections/GenericSection";
 export default class AddCribbForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { address: "" };
+    this.state = {
+      address: "",
+      address_data: [],
+      name: "",
+      street_address: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      googleMapLink: "",
+    };
+    this.autocomplete = null;
   }
-
   handleChange = (address) => {
-    this.setState({ address });
+    this.setState({ address: address });
   };
 
-  handleSelect = (address) => {
-    geocodeByAddress(address)
-      .then((results) => getLatLng(results[0]))
-      .then((latLng) => console.log("Success", latLng))
-      .catch((error) => console.error("Error", error));
+  handleSelect = async (address) => {
+    const parsed = parseAddress.parseLocation(address);
+
+    await this.setState({ street_address: address, address_data: parsed });
+    console.log(this.state.address_data.prefix, this.state.address_data.number);
+    this.setState({
+      city: this.state.address_data.city,
+      state: this.state.address_data.state,
+      zip_code: this.state.address_data.zip_code,
+    });
+  };
+
+  handlePlaceSelect = (address) => {
+    // let addressObject = addres.getPlace();
+    // let address = addressObject.address_components;
+    // this.setState({
+    //   name: address,
+    // street_address: `${address[0].long_name} ${address[1].long_name}`,
+    // city: address[4].long_name,
+    // state: address[6].short_name,
+    // zip_code: address[8].short_name,
+    // googleMapLink: addressObject.url,
+    //  });
   };
 
   render() {
@@ -43,6 +71,7 @@ export default class AddCribbForm extends React.Component {
                 value={this.state.address}
                 onChange={this.handleChange}
                 onSelect={this.handleSelect}
+                googleCallbackName="myCallbackFunc"
               >
                 {({
                   getInputProps,
@@ -67,6 +96,7 @@ export default class AddCribbForm extends React.Component {
                         const style = suggestion.active
                           ? { backgroundColor: "#fafafa", cursor: "pointer" }
                           : { backgroundColor: "#ffffff", cursor: "pointer" };
+
                         return (
                           <div
                             {...getSuggestionItemProps(suggestion, {
