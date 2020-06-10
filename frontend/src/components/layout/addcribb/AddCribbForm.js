@@ -9,6 +9,9 @@ import parseAddress from "parse-address";
 
 import { SectionProps } from "../../../utils/SectionProps";
 import Input from "../../elements/Input";
+import Button from "../../elements/Button";
+
+//component
 import GenericSection from "../../../../src/components/sections/GenericSection";
 
 // import sections
@@ -36,8 +39,21 @@ export default class AddCribbForm extends React.Component {
     const parsed = parseAddress.parseLocation(address);
 
     await this.setState({ street_address: address, address_data: parsed });
-    console.log(this.state.address_data.prefix, this.state.address_data.number);
+    var street = "";
+    if (!this.state.address_data.prefix === "undefined") {
+      street =
+        this.state.address_data.number +
+        " " +
+        this.state.address_data.prefix +
+        " " +
+        this.state.address_data.street;
+    } else {
+      street =
+        this.state.address_data.number + " " + this.state.address_data.street;
+    }
+
     this.setState({
+      street_address: street,
       city: this.state.address_data.city,
       state: this.state.address_data.state,
       zip_code: this.state.address_data.zip_code,
@@ -80,7 +96,7 @@ export default class AddCribbForm extends React.Component {
                   loading,
                 }) => (
                   <div>
-                    <input
+                    <Input
                       {...getInputProps({
                         placeholder: "Search Places ...",
                         className: "location-search-input",
@@ -113,37 +129,62 @@ export default class AddCribbForm extends React.Component {
                 )}
               </PlacesAutocomplete>
 
-              <input
+              <Input
+                className="mt-16 mb-16"
                 name={"name"}
                 value={this.state.name}
                 placeholder={"Name"}
                 onChange={this.handleChange}
               />
-              <input
+              <Input
+                className="mt-16 mb-16"
                 name={"street_address"}
                 value={this.state.street_address}
                 placeholder={"Street Address"}
                 onChange={this.handleChange}
               />
-              <input
+              <Input
+                className="mt-16 mb-16"
                 name={"city"}
                 value={this.state.city}
                 placeholder={"City"}
                 onChange={this.handleChange}
               />
-              <input
+              <Input
+                className="mt-16 mb-16"
                 name={"state"}
                 value={this.state.state}
                 placeholder={"State"}
                 onChange={this.handleChange}
               />
-              <input
+              <Input
+                className="mt-16 mb-16"
                 name={"zip_code"}
                 value={this.state.zip_code}
                 placeholder={"Zipcode"}
                 onChange={this.handleChange}
               />
-              <button onSubmit={this.handleSubmit}>Submit</button>
+              <Input
+                className="mt-16 mb-16"
+                name={"Landlord"}
+                value=""
+                placeholder={"Landlord"}
+              />
+              <Input
+                className="mt-16 mb-16"
+                name={"phone"}
+                value={""}
+                placeholder={"Phone Number"}
+              />
+              <Input
+                className="mt-16 mb-16"
+                name={"rent"}
+                value={""}
+                placeholder={"Rent Cost"}
+              />
+              <Button className="mt-16 mb-16" onSubmit={this.handleSubmit}>
+                Submit
+              </Button>
             </form>
           </div>
         </section>

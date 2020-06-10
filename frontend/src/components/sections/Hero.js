@@ -112,8 +112,6 @@ const Hero = ({
             </Input>
           </div>
 
-          <Bucket />
-
           {/* Video  */}
           {/* <div
             className="hero-figure reveal-from-bottom illustration-element-01"
