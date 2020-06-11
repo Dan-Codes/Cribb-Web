@@ -4,7 +4,11 @@ const pool = require("./db");
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // req.body type
+app.use(
+  express.json({
+    type: ["application/json", "text/plain"],
+  })
+); // req.body type
 
 app.get("/", (req, res) => {
   const bucket = [
@@ -27,11 +31,13 @@ app.post("/addcribb", async (req, res) => {
       lat,
       long,
       landlord,
-      phoneNumber,
+      phone,
       rent,
     } = req.body;
+
+    console.log(req.body);
     const newListing = await pool.query(
-      "INSERT INTO listing (addedby,address,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phoneNumber, rent) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *",
+      "INSERT INTO listing (addedby,address,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *",
       [
         addedby,
         address,
@@ -42,7 +48,7 @@ app.post("/addcribb", async (req, res) => {
         lat,
         long,
         landlord,
-        phoneNumber,
+        phone,
         rent,
       ]
     );
@@ -59,6 +65,38 @@ app.get("/addcribb", async (req, res) => {
     res.json(allListings.rows);
   } catch (error) {
     console.error(error.message);
+  }
+});
+
+//update a todo
+
+// app.put("/todos/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { description } = req.body;
+//     const updateTodo = await pool.query(
+//       "UPDATE todo SET description = $1 WHERE todo_id = $2",
+//       [description, id]
+//     );
+
+//     res.json("Todo was updated!");
+//   } catch (err) {
+//     console.error(err.message);
+//   }
+// });
+
+//delete a todo
+
+app.delete("/addcribb/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteTodo = await pool.query(
+      "DELETE FROM listing WHERE address_id = $1",
+      [id]
+    );
+    res.json("Todo was deleted!");
+  } catch (err) {
+    console.log(err.message);
   }
 });
 

@@ -71,7 +71,7 @@ const Hero = ({
               >
                 Need to find a place to live?
               </p>
-              <div className="reveal-from-bottom" data-reveal-delay="600">
+              {/* <div className="reveal-from-bottom" data-reveal-delay="600">
                 <ButtonGroup>
                   <Button
                     tag="a"
@@ -90,7 +90,7 @@ const Hero = ({
                     View on Github
                   </Button>
                 </ButtonGroup>
-              </div>
+              </div> */}
             </div>
           </div>
 

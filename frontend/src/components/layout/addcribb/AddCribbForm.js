@@ -22,17 +22,31 @@ export default class AddCribbForm extends React.Component {
     this.state = {
       address: "",
       address_data: [],
-      name: "",
+      addedby: "",
       street_address: "",
       city: "",
       state: "",
       zip_code: "",
       googleMapLink: "",
+      landlord: "",
+      phone: "",
+      rent: "",
+      lat: "",
+      long: "",
+      avgAmenities: "0",
+      avgManage: "0",
+      avgLocation: "0",
+      avgOverallRating: "0",
     };
     this.autocomplete = null;
+    this.handleChange = this.handleChange.bind(this);
   }
-  handleChange = (address) => {
-    this.setState({ address: address });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleChangeAutocomplete = async (address) => {
+    await this.setState({ address: address });
   };
 
   handleSelect = async (address) => {
@@ -51,31 +65,39 @@ export default class AddCribbForm extends React.Component {
       street =
         this.state.address_data.number + " " + this.state.address_data.street;
     }
-
+    await geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      .then((geopoint) =>
+        this.setState({ lat: geopoint.lat, long: geopoint.lng })
+      )
+      .catch((error) => console.error("Error", error));
     this.setState({
       street_address: street,
       city: this.state.address_data.city,
       state: this.state.address_data.state,
       zip_code: this.state.address_data.zip_code,
     });
+    console.log(this.state);
   };
 
-  handlePlaceSelect = (address) => {
-    // let addressObject = addres.getPlace();
-    // let address = addressObject.address_components;
-    // this.setState({
-    //   name: address,
-    // street_address: `${address[0].long_name} ${address[1].long_name}`,
-    // city: address[4].long_name,
-    // state: address[6].short_name,
-    // zip_code: address[8].short_name,
-    // googleMapLink: addressObject.url,
-    //  });
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = this.state;
+      const response = await fetch("http://localhost:9000/addcribb", {
+        method: "POST",
+        header: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      // window.location = "/";
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   render() {
     return (
-      <GenericSection>
+      <GenericSection className="mt-0">
         <section
           className="mt-0 mb-16 reveal-from-bottom"
           data-reveal-delay="200"
@@ -84,8 +106,8 @@ export default class AddCribbForm extends React.Component {
             <h1>Add New Cribb</h1>
             <form onSubmit={this.handleSubmit}>
               <PlacesAutocomplete
-                value={this.state.address}
-                onChange={this.handleChange}
+                value={this.state.address || ""}
+                onChange={this.handleChangeAutocomplete}
                 onSelect={this.handleSelect}
                 googleCallbackName="myCallbackFunc"
               >
@@ -131,60 +153,61 @@ export default class AddCribbForm extends React.Component {
 
               <Input
                 className="mt-16 mb-16"
-                name={"name"}
-                value={this.state.name}
+                name={"addedby"}
+                value={this.state.addedby || ""}
                 placeholder={"Name"}
                 onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"street_address"}
-                value={this.state.street_address}
+                value={this.state.street_address || ""}
                 placeholder={"Street Address"}
                 onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"city"}
-                value={this.state.city}
+                value={this.state.city || ""}
                 placeholder={"City"}
                 onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"state"}
-                value={this.state.state}
+                value={this.state.state || ""}
                 placeholder={"State"}
                 onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"zip_code"}
-                value={this.state.zip_code}
+                value={this.state.zip_code || ""}
                 placeholder={"Zipcode"}
                 onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
-                name={"Landlord"}
-                value=""
+                name={"landlord"}
+                value={this.state.landlord || ""}
                 placeholder={"Landlord"}
+                onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"phone"}
-                value={""}
+                value={this.state.phone || ""}
                 placeholder={"Phone Number"}
+                onChange={this.handleChange}
               />
               <Input
                 className="mt-16 mb-16"
                 name={"rent"}
-                value={""}
+                value={this.state.rent || ""}
                 placeholder={"Rent Cost"}
+                onChange={this.handleChange}
               />
-              <Button className="mt-16 mb-16" onSubmit={this.handleSubmit}>
-                Submit
-              </Button>
+              <Button className="mt-16 mb-16">Submit</Button>
             </form>
           </div>
         </section>
