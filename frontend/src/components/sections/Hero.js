@@ -94,7 +94,10 @@ const Hero = ({
             </div>
           </div>
 
-          <div className="mt-32 mb-32 hero-action">
+          <div
+            className="mt-32 mb-32 hero-action reveal-from-bottom"
+            data-reveal-delay="450"
+          >
             <Input
               id="search"
               type="search"

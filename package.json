@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/Dan-Codes/Cribb-Web#readme",
   "dependencies": {
+    "Validator": "^1.0.8",
     "concurrently": "^5.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "pg": "^8.2.1"
+    "pg": "^8.2.1",
+    "validator": "^13.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

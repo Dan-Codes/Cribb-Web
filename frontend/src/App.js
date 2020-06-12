@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, createContext } from "react";
 import { useLocation, Switch } from "react-router-dom";
 import AppRoute from "./utils/AppRoute";
 import ScrollReveal from "./utils/ScrollReveal";
@@ -11,6 +11,7 @@ import LayoutDefault from "./layouts/LayoutDefault";
 import Home from "./views/Home";
 import Maps from "./views/Maps";
 import AddCribb from "./views/AddCribb";
+import SignUp from "./views/SignUp";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -50,6 +51,7 @@ const App = () => {
             component={AddCribb}
             layout={LayoutDefault}
           />
+          <AppRoute exact path="/signup" component={SignUp} />
         </Switch>
       )}
     />
