@@ -1,5 +1,6 @@
 import React from "react";
 import LoginForm from "./LoginForm";
+import classNames from "classnames";
 import GenericSection from "../components/sections/GenericSection";
 
 class SignUp extends React.Component {

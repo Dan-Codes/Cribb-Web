@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import classNames from "classnames";
 import { SectionProps } from "../../utils/SectionProps";
 import ButtonGroup from "../elements/ButtonGroup";
@@ -7,6 +7,7 @@ import Image from "../elements/Image";
 import Modal from "../elements/Modal";
 import Input from "../elements/Input";
 import Bucket from "./partials/bucket";
+import { CribbContext } from "../../../src/CribbContext";
 
 const propTypes = {
   ...SectionProps.types,
@@ -52,6 +53,13 @@ const Hero = ({
     topDivider && "has-top-divider",
     bottomDivider && "has-bottom-divider"
   );
+  const [cribb, setCribb] = useContext(CribbContext);
+  console.log(cribb);
+
+  // useEffect(() => {
+  //   setCribb((prev) => {prev}
+  //   console.log(cribb);
+  // }, []);
 
   return (
     <section {...props} className={outerClasses}>

@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
+const bcrypt = require("bcrypt");
+var validator = require("validator");
 
 const app = express();
 app.use(cors());
@@ -94,11 +96,77 @@ app.delete("/addcribb/:id", async (req, res) => {
       "DELETE FROM listing WHERE address_id = $1",
       [id]
     );
-    res.json("Todo was deleted!");
+    res.json("Address was deleted!");
   } catch (err) {
     console.log(err.message);
   }
 });
+
+//sign up
+app.post("/signup", async (req, res) => {
+  try {
+    console.log("this is the request body: ", req.body);
+    const validInput = validateUser(req.body);
+    if (validInput) {
+      const userExist = await userExists(req.body.email);
+      console.log("USER exists: ", userExist);
+      if (!userExist) {
+        const saltRounds = 10;
+        bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
+          // Store hash in your password DB.
+          console.log("3");
+          req.body.password = hash;
+          console.log(req.body);
+          const { firstName, lastName, identifier, password, admin } = req.body;
+          const newUser = await pool.query(
+            "INSERT INTO users (first_name, last_name, email, password, admin) VALUES($1,$2,$3,$4,$5) RETURNING *",
+            [firstName, lastName, identifier, password, admin]
+          );
+          res.json(newUser.rows[0]);
+        });
+      } else {
+        console.log("2");
+        // user already in db
+        res.json({
+          error: "User Exists",
+        });
+      }
+    } else {
+      res.json({
+        error: "Not valid input",
+      });
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+});
+
+function validateUser(user) {
+  const validEmail =
+    typeof user.identifier == "string" && user.identifier.trim() != "";
+  const validPassword =
+    typeof user.password == "string" &&
+    user.password.trim() != "" &&
+    user.password.length >= 6;
+  return validEmail && validPassword;
+}
+
+//check if user already exists
+async function userExists(e_mail) {
+  try {
+    const User = await pool.query("SELECT * FROM users WHERE email = $1", [
+      e_mail,
+    ]);
+    if (User === undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error.message);
+    console.log("error");
+  }
+}
 
 const port = 9000;
 

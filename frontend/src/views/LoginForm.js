@@ -4,18 +4,23 @@ import Button from "../components/elements/Button";
 
 import validateInput from "../../src/validations/login";
 import FormLabel from "../components/elements/FormLabel";
+import axios from "axios";
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      firstName: "",
+      lastName: "",
       identifier: "",
       password: "",
       errors: {},
       isLoading: false,
+      admin: false,
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
+    //this.onChange = this.isValid.bind(this);
   }
 
   isValid() {
@@ -30,7 +35,14 @@ class LoginForm extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.isValid()) {
-      return;
+      axios
+        .post("http://localhost:9000/signup", this.state)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
   onChange(e) {
@@ -38,26 +50,51 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { errors, identifier, password, isLoading } = this.state;
+    const {
+      errors,
+      identifier,
+      password,
+      isLoading,
+      firstName,
+      lastName,
+    } = this.state;
     return (
       <form onSubmit={this.onSubmit}>
         <Input
-          field="identifier"
-          label="Username/ Email"
-          value={identifier}
-          hint={errors.identifier}
+          name="firstName"
+          label="First Name"
+          value={this.state.firstName}
+          hint={errors.firstName}
           onChange={this.onChange}
+          className="mb-32"
         />
         <Input
-          field="password"
+          name="lastName"
+          label="Last Name"
+          value={this.state.lastName}
+          hint={errors.lastName}
+          onChange={this.onChange}
+          className="mb-32"
+        />
+        <Input
+          name="identifier"
+          label="Username/ Email"
+          value={this.state.identifier}
+          hint={errors.identifier}
+          onChange={this.onChange}
+          className="mb-32"
+        />
+        <Input
+          name="password"
           label="Password"
-          value={password}
+          value={this.state.password}
           hint={errors.password}
           onChange={this.onChange}
           type="password"
+          className="mb-32"
         />
         <div className="form-group">
-          <Button className="btn btn-primary btn-lg" disabled={isLoading}>
+          <Button className="mt-16 btn btn-primary btn-lg" disabled={isLoading}>
             Login
           </Button>
         </div>

@@ -14,3 +14,12 @@ CREATE TABLE listing(
     phoneNumber VARCHAR(16),
     rent VARCHAR(20)
 );
+
+CREATE TABLE users(
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(25),
+    last_name VARCHAR(25),
+    email VARCHAR(35),
+    password VARCHAR(256),
+    admin bool
+);
