@@ -3,9 +3,11 @@ const cors = require("cors");
 const pool = require("./db");
 const bcrypt = require("bcrypt");
 var validator = require("validator");
+var cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser(`${process.env.REACT_APP_cookie}`));
 app.use(
   express.json({
     type: ["application/json", "text/plain"],
@@ -114,7 +116,6 @@ app.post("/signup", async (req, res) => {
         const saltRounds = 10;
         bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
           // Store hash in your password DB.
-          console.log("3");
           req.body.password = hash;
           console.log(req.body);
           const { firstName, lastName, identifier, password, admin } = req.body;
@@ -125,7 +126,6 @@ app.post("/signup", async (req, res) => {
           res.json(newUser.rows[0]);
         });
       } else {
-        console.log("2");
         // user already in db
         res.json({
           error: "User Exists",
@@ -141,6 +141,39 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+//login function
+app.post("/login", async (req, res, next) => {
+  try {
+    const { user_id, password, email } =
+      (await userExists2(req.body.email)) || {};
+
+    console.log(password);
+    if (email != undefined) {
+      bcrypt.compare(req.body.password, password, (err, result) => {
+        // if hashes match then result == true
+        console.log("password is ", result);
+        if (!result) {
+          next(new Error("Invalid Credentials"));
+        } else {
+          res.cookie("user_id", user_id, {
+            httpOnly: true,
+            signed: false, //must be true in production
+            secure: false, //must be true in production
+          });
+          res.json({
+            message: "Login Success!",
+          });
+        }
+      });
+    } else {
+      //error
+      next(new Error("Invaid Credentials"));
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
 function validateUser(user) {
   const validEmail =
     typeof user.identifier == "string" && user.identifier.trim() != "";
@@ -151,16 +184,33 @@ function validateUser(user) {
   return validEmail && validPassword;
 }
 
-//check if user already exists
+//check if user already exists and returns a boolean
 async function userExists(e_mail) {
   try {
     const User = await pool.query("SELECT * FROM users WHERE email = $1", [
       e_mail,
     ]);
     if (User === undefined) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error(error.message);
+    console.log("error");
+  }
+}
+
+//checks if user exists and returns user data as json
+async function userExists2(e_mail) {
+  try {
+    const User = await pool.query("SELECT * FROM users WHERE email = $1", [
+      e_mail,
+    ]);
+    if (User === undefined) {
+      return null;
+    } else {
+      return User.rows[0];
     }
   } catch (error) {
     console.error(error.message);

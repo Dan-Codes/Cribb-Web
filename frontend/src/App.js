@@ -12,6 +12,7 @@ import Home from "./views/Home";
 import Maps from "./views/Maps";
 import AddCribb from "./views/AddCribb";
 import SignUp from "./views/SignUp";
+import Login from "./views/Login";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -51,7 +52,18 @@ const App = () => {
             component={AddCribb}
             layout={LayoutDefault}
           />
-          <AppRoute exact path="/signup" component={SignUp} />
+          <AppRoute
+            exact
+            path="/signup"
+            component={SignUp}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            exact
+            path="/login"
+            component={Login}
+            layout={LayoutDefault}
+          />
         </Switch>
       )}
     />

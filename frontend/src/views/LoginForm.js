@@ -12,7 +12,7 @@ class LoginForm extends React.Component {
     this.state = {
       firstName: "",
       lastName: "",
-      identifier: "",
+      email: "",
       password: "",
       errors: {},
       isLoading: false,
@@ -52,39 +52,49 @@ class LoginForm extends React.Component {
   render() {
     const {
       errors,
-      identifier,
+      email,
       password,
       isLoading,
       firstName,
       lastName,
     } = this.state;
     return (
-      <form onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit} className="reveal-from-bottom">
+        <div>
+          <Input
+            type="text"
+            name="firstName"
+            label="First Name"
+            value={this.state.firstName}
+            hint={errors.firstName}
+            onChange={this.onChange}
+            className="mb-32"
+            data-reveal-delay="180"
+          />
+        </div>
+
         <Input
-          name="firstName"
-          label="First Name"
-          value={this.state.firstName}
-          hint={errors.firstName}
-          onChange={this.onChange}
-          className="mb-32"
-        />
-        <Input
+          type="text"
           name="lastName"
           label="Last Name"
           value={this.state.lastName}
           hint={errors.lastName}
           onChange={this.onChange}
           className="mb-32"
+          data-reveal-delay="190"
         />
         <Input
-          name="identifier"
+          type="email"
+          name="email"
           label="Username/ Email"
-          value={this.state.identifier}
-          hint={errors.identifier}
+          value={this.state.email}
+          hint={errors.email}
           onChange={this.onChange}
           className="mb-32"
+          data-reveal-delay="200"
         />
         <Input
+          type="password"
           name="password"
           label="Password"
           value={this.state.password}

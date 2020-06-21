@@ -22,6 +22,7 @@
     "Validator": "^1.0.8",
     "bcrypt": "^5.0.0",
     "concurrently": "^5.2.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "pg": "^8.2.1",
