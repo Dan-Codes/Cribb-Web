@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import FormLabel from "../components/elements/FormLabel";
 import Input from "../components/elements/Input";
 import Button from "../components/elements/Button";
+import isEmpty from "lodash/isEmpty";
 
 import validateInput from "../../src/validations/login";
 import axios from "axios";
@@ -14,7 +15,9 @@ export default class LoginComp extends React.Component {
       password: "",
       errors: {},
       isLoading: false,
+      showError: false,
     };
+
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
     //this.onChange = this.isValid.bind(this);
@@ -38,73 +41,80 @@ export default class LoginComp extends React.Component {
         })
         .then(function (response) {
           console.log(response);
-          window.location;
+          window.location = "/";
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error);
+          this.setState({ showError: true });
         });
     }
   }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
-
   render() {
     const { errors, email, password, isLoading } = this.state;
     return (
-      <form onSubmit={this.onSubmit}>
-        <h3>Sign In</h3>
-
-        <div className="form-group">
-          <FormLabel>Email address</FormLabel>
-          <Input
-            type="email"
-            name="email"
-            className="form-control"
-            placeholder="Enter email"
-            value={this.state.email}
-            hint={errors.email}
-            onChange={this.onChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <FormLabel>Password</FormLabel>
-          <Input
-            type="password"
-            name="password"
-            className="form-control"
-            placeholder="Enter password"
-            value={this.state.password}
-            hint={errors.password}
-            onChange={this.onChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <div className="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="customCheck1"
+      <>
+        <form onSubmit={this.onSubmit}>
+          <h3>Sign In</h3>
+          {this.state.showError ? (
+            <p className="text-xxs text-color-error">Incorrect Credentials</p>
+          ) : null}
+          <div className="form-group">
+            <FormLabel>Email address</FormLabel>
+            <Input
+              type="email"
+              name="email"
+              className="form-control"
+              placeholder="Enter email"
+              value={this.state.email}
+              hint={errors.email}
+              onChange={this.onChange}
             />
-            <FormLabel className="custom-control-label" htmlFor="customCheck1">
-              Remember me
-            </FormLabel>
           </div>
-        </div>
 
-        <Button
-          type="submit"
-          className="btn btn-primary btn-block"
-          disabled={isLoading}
-        >
-          Submit
-        </Button>
-        <p className="forgot-password text-right">
-          Forgot <a href="#">password?</a>
-        </p>
-      </form>
+          <div className="form-group">
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="Enter password"
+              value={this.state.password}
+              hint={errors.password}
+              onChange={this.onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="customCheck1"
+              />
+              <FormLabel
+                className="custom-control-label"
+                htmlFor="customCheck1"
+              >
+                Remember me
+              </FormLabel>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={isLoading}
+          >
+            Submit
+          </Button>
+          <p className="forgot-password text-right">
+            Forgot <a href="#">password?</a>
+          </p>
+        </form>
+      </>
     );
   }
 }

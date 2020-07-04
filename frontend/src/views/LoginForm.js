@@ -39,6 +39,7 @@ class LoginForm extends React.Component {
         .post("http://localhost:9000/signup", this.state)
         .then(function (response) {
           console.log(response);
+          window.location = "/login";
         })
         .catch(function (error) {
           console.log(error);

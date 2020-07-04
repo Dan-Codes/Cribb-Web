@@ -8,6 +8,9 @@ import Modal from "../elements/Modal";
 import Input from "../elements/Input";
 import Bucket from "./partials/bucket";
 import { CribbContext } from "../../../src/CribbContext";
+import Search from "../../views/Search";
+import ReactDOM, { render } from "react-dom";
+import { useHistory } from "react-router-dom";
 
 const propTypes = {
   ...SectionProps.types,
@@ -28,7 +31,7 @@ const Hero = ({
   ...props
 }) => {
   const [videoModalActive, setVideomodalactive] = useState(false);
-
+  const history = useHistory();
   const openModal = (e) => {
     e.preventDefault();
     setVideomodalactive(true);
@@ -53,13 +56,20 @@ const Hero = ({
     topDivider && "has-top-divider",
     bottomDivider && "has-bottom-divider"
   );
-  const [cribb, setCribb] = useContext(CribbContext);
-  console.log(cribb);
+  //const [cribb, setCribb] = useContext(CribbContext);
+  //console.log(cribb);
 
   // useEffect(() => {
   //   setCribb((prev) => {prev}
   //   console.log(cribb);
   // }, []);
+
+  const _handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      console.log("do validate");
+      history.push("/search");
+    }
+  };
 
   return (
     <section {...props} className={outerClasses}>
@@ -113,6 +123,7 @@ const Hero = ({
               labelHidden
               hasIcon="right"
               placeholder="Find a property"
+              onKeyDown={_handleKeyDown.bind(this)}
             >
               <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
                 <path

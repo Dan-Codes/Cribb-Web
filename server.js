@@ -157,7 +157,7 @@ app.post("/login", async (req, res, next) => {
         } else {
           res.cookie("user_id", user_id, {
             httpOnly: true,
-            signed: false, //must be true in production
+            signed: true, //must be true in production
             secure: false, //must be true in production
           });
           res.json({
@@ -171,6 +171,19 @@ app.post("/login", async (req, res, next) => {
     }
   } catch (error) {
     console.error(error.message);
+  }
+});
+
+app.get("/check_login", async (req, res, next) => {
+  try {
+    console.log("This is the cookie:", req.signedCookies.user_id);
+    if (req.headers.cookie === undefined) {
+      res.status(401).send();
+    } else {
+      res.send({ Authenticated: true });
+    }
+  } catch (error) {
+    console.log(error.message);
   }
 });
 

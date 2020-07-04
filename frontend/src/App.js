@@ -5,7 +5,7 @@ import ScrollReveal from "./utils/ScrollReveal";
 import ReactGA from "react-ga";
 
 // Layouts
-import LayoutDefault from "./layouts/LayoutDefault";
+import { LayoutDefault } from "./layouts/LayoutDefault";
 
 // Views
 import Home from "./views/Home";
@@ -13,6 +13,7 @@ import Maps from "./views/Maps";
 import AddCribb from "./views/AddCribb";
 import SignUp from "./views/SignUp";
 import Login from "./views/Login";
+import Search from "./views/Search";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -22,7 +23,7 @@ const trackPage = (page) => {
   ReactGA.pageview(page);
 };
 
-const App = () => {
+const App = (props) => {
   const childRef = useRef();
   let location = useLocation();
 
@@ -50,6 +51,12 @@ const App = () => {
             exact
             path="/addcribb"
             component={AddCribb}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            exact
+            path="/search"
+            component={Search}
             layout={LayoutDefault}
           />
           <AppRoute
