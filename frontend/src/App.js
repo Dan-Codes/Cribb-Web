@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, createContext } from "react";
+import React, {
+  useRef,
+  useEffect,
+  createContext,
+  Component,
+  useContext,
+} from "react";
 import { useLocation, Switch } from "react-router-dom";
 import AppRoute from "./utils/AppRoute";
 import ScrollReveal from "./utils/ScrollReveal";
@@ -14,6 +20,7 @@ import AddCribb from "./views/AddCribb";
 import SignUp from "./views/SignUp";
 import Login from "./views/Login";
 import Search from "./views/Search";
+import { CribbContext } from "./CribbContext";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -34,6 +41,13 @@ const App = (props) => {
     trackPage(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
+
+  // const PrivateRoute = ({ component: Component, ...rest}) => {
+  //   const value = useContext(CribbContext);
+  //   <Route {...rest} render={(props) => (
+  //     value[0].auth === true ? <
+  //   )}/>
+  //   }
 
   return (
     <ScrollReveal
