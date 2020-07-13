@@ -4,6 +4,18 @@ const pool = require("./db");
 const bcrypt = require("bcrypt");
 var validator = require("validator");
 var cookieParser = require("cookie-parser");
+require("dotenv").config();
+
+const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
+const SmartyStreetsCore = SmartyStreetsSDK.core;
+const Lookup = SmartyStreetsSDK.usAutocompletePro.Lookup;
+
+// for Server-to-server requests, use this code:
+let authId = process.env.REACT_APP_SMARTY_AUTH_ID;
+let authToken = process.env.REACT_APP_SMARTY_AUTH_TOKEN;
+const credentials = new SmartyStreetsCore.StaticCredentials(authId, authToken);
+console.log(credentials);
+let client = SmartyStreetsCore.buildClient.usStreet(credentials);
 
 const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -37,33 +49,43 @@ app.post("/addcribb", async (req, res) => {
       landlord,
       phone,
       rent,
+      city,
+      state,
+      zip_code,
     } = req.body;
 
     console.log(req.body);
-    const newListing = await pool.query(
-      "INSERT INTO listing (addedby,address,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *",
-      [
-        addedby,
-        address,
-        avgAmenities,
-        avgManage,
-        avgLocation,
-        avgOverallRating,
-        lat,
-        long,
-        landlord,
-        phone,
-        rent,
-      ]
-    );
+    const response = await smartyStreet(address, city, state, zip_code);
+    console.log("Promise: ", response);
 
-    res.json(newListing.rows[0]);
+    if (response != null) {
+      const newListing = await pool.query(
+        "INSERT INTO listing (addedby,address,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *",
+        [
+          addedby,
+          address,
+          avgAmenities,
+          avgManage,
+          avgLocation,
+          avgOverallRating,
+          lat,
+          long,
+          landlord,
+          phone,
+          rent,
+        ]
+      );
+
+      res.json(newListing.rows[0]);
+    } else {
+      res.status(500).send();
+    }
   } catch (e) {
     console.error(e.message);
   }
 });
 
-app.get("/addcribb", async (req, res) => {
+app.get("/viewCribb", async (req, res) => {
   try {
     const allListings = await pool.query("SELECT * from listing");
     res.json(allListings.rows);
@@ -228,6 +250,45 @@ async function userExists2(e_mail) {
   } catch (error) {
     console.error(error.message);
     console.log("error");
+  }
+}
+
+async function smartyStreet(street, city, state, zip) {
+  try {
+    return new Promise(function (resolve, reject) {
+      let lookup1 = new Lookup();
+      lookup1.inputId = "24601"; // Optional ID from your system
+      //lookup1.addressee = "John Doe";
+      lookup1.street = street;
+      //lookup1.street2 = "closet under the stairs";
+      //lookup1.secondary = "APT 2";
+      lookup1.urbanization = ""; // Only applies to Puerto Rico addresses
+      lookup1.city = city;
+      lookup1.state = state;
+      lookup1.zipCode = zip;
+      lookup1.maxCandidates = 3;
+      lookup1.match = "invalid"; // "invalid" is the most permissive match,
+      // this will always return at least one result even if the address is invalid.
+      // Refer to the documentation for additional MatchStrategy options.
+
+      let batch = new SmartyStreetsCore.Batch();
+      batch.add(lookup1);
+
+      client
+        .send(batch)
+        .then((response) => {
+          response.lookups.map((lookup) => {
+            console.log(lookup.result);
+            resolve(lookup.result);
+          });
+        })
+        .catch((response) => {
+          console.log(response);
+          reject(null);
+        });
+    });
+  } catch (error) {
+    console.error(error.message);
   }
 }
 
