@@ -1,33 +1,45 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import axios from "axios";
+import ListItem from "./ListItem";
 
-class bucket extends Component {
+class Bucket extends Component {
   constructor() {
     super();
     this.state = {
-      buck: [],
+      search: [],
     };
   }
-  async componentWillMount() {
-    await axios
-      .get(`http://localhost:9000`)
-      .then((messages) => messages.data)
-      .then((buck) => this.setState({ buck }));
-    console.log(this.state.buck);
+
+  componentDidMount() {
+    axios
+      .get(`http://localhost:9000/viewCribb`)
+      .then((response) => {
+        console.log(response.data);
+        this.setState({ search: response.data });
+      })
+      .then((result) => {
+        console.log("Search State: ", this.state.search);
+        this.render();
+      });
   }
   render() {
-    console.log("test");
+    {
+      console.log("Rendering!");
+    }
     return (
-      <div>
-        <h1>Hello</h1>
-        <ul className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="500">
-          {this.state.buck.map((element) => (
-            <li key={element.id}>{element.name}</li>
-          ))}
-        </ul>
-      </div>
+      <>
+        {this.state.search ? (
+          <>
+            {this.state.search.map((listing, index) => (
+              <ListItem key={listing.address_id} listing={listing}></ListItem>
+            ))}
+          </>
+        ) : (
+          <></>
+        )}
+      </>
     );
   }
 }
 
-export default bucket;
+export default Bucket;

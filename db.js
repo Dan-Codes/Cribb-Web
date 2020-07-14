@@ -7,7 +7,11 @@ const pool = new Pool({
   password: "password",
   host: "localhost",
   port: 5432,
-  database: "cribb",
+  database: "postgres",
 });
+async function run() {
+  const result = await pool.query("SELECT * from listing");
+  console.log(result);
+}
 
 module.exports = pool;

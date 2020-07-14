@@ -37,15 +37,13 @@ app.get("/", (req, res) => {
 
 app.post("/addcribb", async (req, res) => {
   try {
-    const {
+    var {
       addedby,
       address,
       avgAmenities,
       avgManage,
       avgLocation,
       avgOverallRating,
-      lat,
-      long,
       landlord,
       phone,
       rent,
@@ -56,11 +54,16 @@ app.post("/addcribb", async (req, res) => {
 
     console.log(req.body);
     const response = await smartyStreet(address, city, state, zip_code);
-    console.log("Promise: ", response);
+    console.log("Promise: ", response[0]);
+
+    const { deliveryLine1 } = response[0];
+    var { cityName, state, zipCode } = response[0].components;
+
+    const { latitude, longitude } = response[0].metadata;
 
     if (response != null) {
       const newListing = await pool.query(
-        "INSERT INTO listing (addedby,address,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *",
+        "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14) RETURNING *",
         [
           addedby,
           address,
@@ -68,11 +71,14 @@ app.post("/addcribb", async (req, res) => {
           avgManage,
           avgLocation,
           avgOverallRating,
-          lat,
-          long,
+          latitude,
+          longitude,
           landlord,
           phone,
           rent,
+          cityName,
+          state,
+          zipCode,
         ]
       );
 
@@ -140,23 +146,25 @@ app.post("/signup", async (req, res) => {
           // Store hash in your password DB.
           req.body.password = hash;
           console.log(req.body);
-          const { firstName, lastName, identifier, password, admin } = req.body;
+          const { firstName, lastName, email, password, admin } = req.body;
           const newUser = await pool.query(
             "INSERT INTO users (first_name, last_name, email, password, admin) VALUES($1,$2,$3,$4,$5) RETURNING *",
-            [firstName, lastName, identifier, password, admin]
+            [firstName, lastName, email, password, admin]
           );
-          res.json(newUser.rows[0]);
+          res.json(newUser.rows[0]).status(200).send();
         });
       } else {
         // user already in db
-        res.json({
-          error: "User Exists",
-        });
+        console.log("user already in db");
+        res.status(409).send();
       }
     } else {
-      res.json({
-        error: "Not valid input",
-      });
+      res
+        .status(400)
+        .json({
+          error: "Not valid input",
+        })
+        .send();
     }
   } catch (e) {
     console.error(e.message);
@@ -169,7 +177,7 @@ app.post("/login", async (req, res, next) => {
     const { user_id, password, email } =
       (await userExists2(req.body.email)) || {};
 
-    console.log(password);
+    console.log("password", password);
     if (email != undefined) {
       bcrypt.compare(req.body.password, password, (err, result) => {
         // if hashes match then result == true
@@ -210,8 +218,7 @@ app.get("/check_login", async (req, res, next) => {
 });
 
 function validateUser(user) {
-  const validEmail =
-    typeof user.identifier == "string" && user.identifier.trim() != "";
+  const validEmail = typeof user.email == "string" && user.email.trim() != "";
   const validPassword =
     typeof user.password == "string" &&
     user.password.trim() != "" &&
@@ -225,7 +232,8 @@ async function userExists(e_mail) {
     const User = await pool.query("SELECT * FROM users WHERE email = $1", [
       e_mail,
     ]);
-    if (User === undefined) {
+    console.log("User: ", User);
+    if (User.rowCount === 0) {
       return false;
     } else {
       return true;
@@ -242,9 +250,11 @@ async function userExists2(e_mail) {
     const User = await pool.query("SELECT * FROM users WHERE email = $1", [
       e_mail,
     ]);
-    if (User === undefined) {
+    if (User.rows[0] === undefined) {
+      console.log("Check if user exists is undefined");
       return null;
     } else {
+      console.log(User.rows[0]);
       return User.rows[0];
     }
   } catch (error) {

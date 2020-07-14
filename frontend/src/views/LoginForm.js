@@ -5,6 +5,7 @@ import Button from "../components/elements/Button";
 import validateInput from "../../src/validations/login";
 import FormLabel from "../components/elements/FormLabel";
 import axios from "axios";
+import lodash from "lodash";
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -17,6 +18,8 @@ class LoginForm extends React.Component {
       errors: {},
       isLoading: false,
       admin: false,
+      showError: false,
+      invalidInput: false,
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -34,15 +37,20 @@ class LoginForm extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
+    this.setState({ showError: false, invalidInput: false });
     if (this.isValid()) {
       axios
         .post("http://localhost:9000/signup", this.state)
-        .then(function (response) {
+        .then((response) => {
           console.log(response);
-          window.location = "/login";
+          const status = response.status;
+          if (status == 200) {
+            window.location = "/login";
+          }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error caught: ", error.message);
+          this.setState({ showError: true, invalidInput: true });
         });
     }
   }
@@ -62,6 +70,12 @@ class LoginForm extends React.Component {
     return (
       <form onSubmit={this.onSubmit} className="reveal-from-bottom">
         <div>
+          {this.state.showError ? (
+            <p className="text-xxs text-color-error"> User already exists</p>
+          ) : null}
+          {this.state.invalidInput ? (
+            <p className="text-xxs text-color-error">Invalid inputs</p>
+          ) : null}
           <Input
             type="text"
             name="firstName"

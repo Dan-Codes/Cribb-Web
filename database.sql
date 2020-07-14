@@ -3,7 +3,10 @@ CREATE DATABASE cribb;
 CREATE TABLE listing(
     address_id SERIAL PRIMARY KEY,
     addedby VARCHAR(50),
-    address VARCHAR(100),
+    streetAddress VARCHAR(100),
+    city VARCHAR(25),
+    state_id VARCHAR(48),
+    zipcode VARCHAR(12),
     avgAmenities float,
     avgManage float,
     avgLocation float,

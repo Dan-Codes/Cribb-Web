@@ -7,6 +7,7 @@ export const CribbProvider = (props) => {
   const [cribb, setCribb] = useState({
     name: "Daniel",
     auth: false,
+    search: "",
   });
 
   return (
