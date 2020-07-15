@@ -31,7 +31,11 @@ class Bucket extends Component {
         {this.state.search ? (
           <>
             {this.state.search.map((listing, index) => (
-              <ListItem key={listing.address_id} listing={listing}></ListItem>
+              <ListItem
+                {...this.props}
+                key={listing.address_id}
+                listing={listing}
+              ></ListItem>
             ))}
           </>
         ) : (
