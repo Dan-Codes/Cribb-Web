@@ -63,7 +63,7 @@ const Testimonial = ({
         <div className={innerClasses}>
           <SectionHeader data={sectionHeader} className="center-content" />
           <div className={tilesClasses}>
-            <Bucket {...props}></Bucket>
+            <Bucket {...props}>{props.children}</Bucket>
           </div>
         </div>
       </div>

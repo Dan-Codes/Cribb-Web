@@ -53,20 +53,25 @@ app.post("/addcribb", async (req, res) => {
     } = req.body;
 
     console.log(req.body);
+
+    //validates address using SmartyStreet API. Response: an object of the Address data
     const response = await smartyStreet(address, city, state, zip_code);
-    console.log("Promise: ", response[0]);
+    console.log("AddressInfo: ", response[0]);
 
     const { deliveryLine1 } = response[0];
     var { cityName, state, zipCode } = response[0].components;
 
     const { latitude, longitude } = response[0].metadata;
 
-    if (response != null) {
+    const alreadyInDB = await cribbExists(deliveryLine1, zipCode);
+
+    //if Cribb is not in the DB yet and address is legit, insert into DB
+    if (alreadyInDB == null && response != null) {
       const newListing = await pool.query(
         "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14) RETURNING *",
         [
           addedby,
-          address,
+          deliveryLine1,
           avgAmenities,
           avgManage,
           avgLocation,
@@ -100,9 +105,9 @@ app.get("/viewCribb", async (req, res) => {
   }
 });
 
-//update a todo
+//update
 
-// app.put("/todos/:id", async (req, res) => {
+// app.put("/viewcribb/:id", async (req, res) => {
 //   try {
 //     const { id } = req.params;
 //     const { description } = req.body;
@@ -252,6 +257,25 @@ async function userExists2(e_mail) {
     ]);
     if (User.rows[0] === undefined) {
       console.log("Check if user exists is undefined");
+      return null;
+    } else {
+      console.log(User.rows[0]);
+      return User.rows[0];
+    }
+  } catch (error) {
+    console.error(error.message);
+    console.log("error");
+  }
+}
+
+async function cribbExists(listing, zipcode) {
+  try {
+    const Response = await pool.query(
+      "SELECT * FROM listing WHERE streetAddress = $1 AND zipcode = $2",
+      [listing, zipcode]
+    );
+    if (Response.rows[0] === undefined) {
+      console.log("Check if listing exists is undefined");
       return null;
     } else {
       console.log(User.rows[0]);

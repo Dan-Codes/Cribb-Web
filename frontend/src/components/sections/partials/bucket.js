@@ -13,15 +13,15 @@ class Bucket extends Component {
   componentDidMount() {
     axios
       .get(`http://localhost:9000/viewCribb`)
-      .then((response) => {
-        console.log(response.data);
-        this.setState({ search: response.data });
-      })
       .then((result) => {
-        console.log("Search State: ", this.state.search);
-        this.render();
-      });
+        this.setState({ search: result.data });
+        console.log("Search State: ", this.state);
+      })
+      .catch((err) => console.log(err));
+
+    console.log(this.props.className);
   }
+
   render() {
     {
       console.log("Rendering!");
@@ -30,11 +30,11 @@ class Bucket extends Component {
       <>
         {this.state.search ? (
           <>
-            {this.state.search.map((listing, index) => (
+            {Object.keys(this.state.search).map((item, index) => (
               <ListItem
                 {...this.props}
-                key={listing.address_id}
-                listing={listing}
+                key={this.state.search[item].address_id}
+                listing={this.state.search[item]}
               ></ListItem>
             ))}
           </>

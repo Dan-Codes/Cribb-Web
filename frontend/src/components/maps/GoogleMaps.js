@@ -1,71 +1,94 @@
 import React from "react";
 import classNames from "classnames";
 import { SectionProps } from "../../utils/SectionProps";
-import { GoogleMap, withScriptjs, withGoogleMap } from "react-google-maps";
+//import { GoogleMap, withScriptjs, withGoogleMap } from "react-google-maps";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import "./GoogleMaps.css";
+import axios from "axios";
+
+import logo from "../../logo.svg";
+import mapsStyle from "../../mapsStyle";
+import Emoji from "../elements/Emoji";
+import house from "../../house.svg";
 // import sections
 
-const propTypes = {
-  ...SectionProps.types,
+const containerStyle = {
+  height: "65vh",
+  width: "100%",
+  display: "flex",
+  flexFlow: "row nowrap",
+  justifyContent: "center",
+  padding: 0,
 };
 
-const defaultProps = {
-  ...SectionProps.defaults,
+const center = {
+  lat: 40.680985,
+  lng: -73.9984122,
 };
 
-const GoogleMaps = ({
-  className,
-  topOuterDivider,
-  bottomOuterDivider,
-  topDivider,
-  bottomDivider,
-  hasBgColor,
-  invertColor,
-  ...props
-}) => {
-  const outerClasses = classNames(
-    "maps section center-content",
-    topOuterDivider && "has-top-divider",
-    bottomOuterDivider && "has-bottom-divider",
-    hasBgColor && "has-bg-color",
-    invertColor && "invert-color",
-    className
-  );
+const options = {
+  styles: mapsStyle,
+  disableDefaultUI: true,
+  zoomControl: true,
+};
 
-  const innerClasses = classNames(
-    "maps-inner section-inner",
-    topDivider && "has-top-divider",
-    bottomDivider && "has-bottom-divider"
-  );
+function GoogleMaps() {
+  const [map, setMap] = React.useState(null);
+  const [markers, setMarkers] = React.useState([]);
+  const icon = <Emoji symbol="🏠"></Emoji>;
 
-  function Map() {
-    return (
-      <GoogleMap
-        defaultZoom={10}
-        defaultCenter={{ lat: 40.712776, lng: -74.005974 }}
-      />
-    );
-  }
-  const WrappedMap = withScriptjs(withGoogleMap(Map));
-  const api = process.env.REACT_APP_key;
+  const onLoad = React.useCallback(async (map) => {
+    const bounds = new window.google.maps.LatLngBounds();
+    //map.fitBounds(bounds);
+    setMap(map);
+    await axios
+      .get("http://localhost:9000/viewCribb")
+      .then((result) => {
+        console.log("database call response: ", result.data);
+        setMarkers(result.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null);
+  }, []);
+
   return (
-    <section {...props} className={outerClasses}>
-      <div className="container">
-        <div className={innerClasses}>
-          <div className="maps-content">
-            <WrappedMap
-              googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${api}`}
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `75vh` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
+    <LoadScript googleMapsApiKey={process.env.REACT_APP_key}>
+      <h1>
+        <img src={logo} height="100" width="100"></img>
+      </h1>
+
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={10}
+        onLoad={onLoad}
+        options={options}
+        onUnmount={onUnmount}
+      >
+        {
+          /* Child components, such as markers, info windows, etc. */
+
+          markers.map((item) => (
+            <Marker
+              key={item.address_id}
+              position={{ lat: Number(item.lat), lng: Number(item.long) }}
+              icon={{
+                url: house,
+                scaledSize: new window.google.maps.Size(25, 25),
+              }}
+            ></Marker>
+          ))
+        }
+
+        <></>
+      </GoogleMap>
+    </LoadScript>
   );
-};
+}
 
-GoogleMaps.propTypes = propTypes;
-GoogleMaps.defaultProps = defaultProps;
-
-export default GoogleMaps;
+export default React.memo(GoogleMaps);

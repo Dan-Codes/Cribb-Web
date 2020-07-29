@@ -3,6 +3,7 @@ import React from "react";
 import Hero from "../components/sections/Hero";
 import GoogleMaps from "../components/maps/GoogleMaps";
 import SectionHeader from "../components/sections/partials/SectionHeader";
+import GenericSection from "../components/sections/GenericSection";
 
 const Maps = () => {
   const sectionHeader = {
@@ -14,7 +15,9 @@ const Maps = () => {
         data={sectionHeader}
         className="center-content"
       ></SectionHeader>
-      <GoogleMaps className="illustration-section-01" />;
+      <GenericSection>
+        <GoogleMaps className="illustration-section-01" />;
+      </GenericSection>
     </>
   );
 };
