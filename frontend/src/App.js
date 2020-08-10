@@ -4,6 +4,7 @@ import React, {
   createContext,
   Component,
   useContext,
+  useState,
 } from "react";
 import { useLocation, Switch } from "react-router-dom";
 import AppRoute from "./utils/AppRoute";
@@ -21,6 +22,11 @@ import SignUp from "./views/SignUp";
 import Login from "./views/Login";
 import Search from "./views/Search";
 import { CribbContext } from "./CribbContext";
+
+import axios from "axios";
+import ListingController from "./controller/ListingController";
+
+import "./App.css";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -83,6 +89,11 @@ const App = (props) => {
             exact
             path="/login"
             component={Login}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            path="/listing"
+            component={ListingController}
             layout={LayoutDefault}
           />
         </Switch>

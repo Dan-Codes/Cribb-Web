@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import useForm from "react-hook-form";
 import classNames from "classnames";
 import PlacesAutocomplete, {
@@ -13,6 +13,7 @@ import Button from "../../elements/Button";
 
 //component
 import GenericSection from "../../../../src/components/sections/GenericSection";
+import FormHint from "../../elements/FormHint";
 
 // import sections
 
@@ -37,9 +38,11 @@ export default class AddCribbForm extends React.Component {
       avgManage: "0",
       avgLocation: "0",
       avgOverallRating: "0",
+      exists: false,
     };
     this.autocomplete = null;
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -65,18 +68,18 @@ export default class AddCribbForm extends React.Component {
       street =
         this.state.address_data.number + " " + this.state.address_data.street;
     }
-    await geocodeByAddress(address)
-      .then((results) => getLatLng(results[0]))
-      .then((geopoint) =>
-        this.setState({ lat: geopoint.lat, long: geopoint.lng })
-      )
-      .catch((error) => console.error("Error", error));
-    this.setState({
-      street_address: street,
-      city: this.state.address_data.city,
-      state: this.state.address_data.state,
-      zip_code: this.state.address_data.zip_code,
-    });
+    // await geocodeByAddress(address)
+    //   .then((results) => getLatLng(results[0]))
+    //   .then((geopoint) =>
+    //     this.setState({ lat: geopoint.lat, long: geopoint.lng })
+    //   )
+    //   .catch((error) => console.error("Error", error));
+    // this.setState({
+    //   street_address: street,
+    //   city: this.state.address_data.city,
+    //   state: this.state.address_data.state,
+    //   zip_code: this.state.address_data.zip_code,
+    // });
     console.log(this.state);
   };
 
@@ -88,8 +91,13 @@ export default class AddCribbForm extends React.Component {
         method: "POST",
         header: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+      }).then((res) => {
+        if (res.status == 500) {
+          this.setState({ exists: true });
+        } else {
+          window.location = "/maps";
+        }
       });
-      // window.location = "/";
     } catch (error) {
       console.log(error.message);
     }
@@ -208,6 +216,11 @@ export default class AddCribbForm extends React.Component {
                 onChange={this.handleChange}
               />
               <Button className="mt-16 mb-16">Submit</Button>
+              {this.exists ? (
+                <FormHint>This address already exists</FormHint>
+              ) : (
+                <></>
+              )}
             </form>
           </div>
         </section>

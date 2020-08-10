@@ -40,11 +40,13 @@ const Search = ({
     bottomDivider && "has-bottom-divider"
   );
 
+  function listingClicked() {}
+
   return (
     <section {...props} className={outerClasses}>
       <div className="container">
         <div className={innerClasses}>
-          <Testimonial></Testimonial>
+          <Testimonial className="reveal-from-bottom"></Testimonial>
         </div>
       </div>
     </section>

@@ -65,6 +65,8 @@ app.post("/addcribb", async (req, res) => {
 
     const alreadyInDB = await cribbExists(deliveryLine1, zipCode);
 
+    console.log("Already in Database: ", alreadyInDB);
+
     //if Cribb is not in the DB yet and address is legit, insert into DB
     if (alreadyInDB == null && response != null) {
       const newListing = await pool.query(
@@ -89,6 +91,7 @@ app.post("/addcribb", async (req, res) => {
 
       res.json(newListing.rows[0]);
     } else {
+      console.log("returning status 500");
       res.status(500).send();
     }
   } catch (e) {
@@ -222,6 +225,18 @@ app.get("/check_login", async (req, res, next) => {
   }
 });
 
+app.get("/getReviews", async (req, res, next) => {
+  try {
+    const addressID = req.body.address_id;
+    const Reviews = await pool.query(
+      "SELECT * from review_fact_table WHERE address_id = $1",
+      [addressID]
+    );
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 function validateUser(user) {
   const validEmail = typeof user.email == "string" && user.email.trim() != "";
   const validPassword =
@@ -278,8 +293,8 @@ async function cribbExists(listing, zipcode) {
       console.log("Check if listing exists is undefined");
       return null;
     } else {
-      console.log(User.rows[0]);
-      return User.rows[0];
+      console.log(Response.rows[0]);
+      return Response.rows[0];
     }
   } catch (error) {
     console.error(error.message);
@@ -296,7 +311,7 @@ async function smartyStreet(street, city, state, zip) {
       lookup1.street = street;
       //lookup1.street2 = "closet under the stairs";
       //lookup1.secondary = "APT 2";
-      lookup1.urbanization = ""; // Only applies to Puerto Rico addresses
+      //lookup1.urbanization = ""; // Only applies to Puerto Rico addresses
       lookup1.city = city;
       lookup1.state = state;
       lookup1.zipCode = zip;

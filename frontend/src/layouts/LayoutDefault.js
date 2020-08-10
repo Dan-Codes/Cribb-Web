@@ -19,7 +19,7 @@ export const LayoutDefault = ({ children }) => {
       .catch((error) => {
         console.log("Check login error", error);
         value[0].auth = false;
-      });
+      }, []);
   });
   return (
     <>

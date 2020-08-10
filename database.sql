@@ -29,8 +29,8 @@ CREATE TABLE users(
 
 CREATE TABLE review_fact_table(
     review_id SERIAL PRIMARY KEY,
-    address_id VARCHAR(12),
-    user_id VARCHAR(12),
+    address_id INT,
+    user_id INT,
     zipcode VARCHAR(12),
     review TEXT,
     review_overall_rating real,

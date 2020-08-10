@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Route } from "react-router-dom";
 import Login from "../views/Login";
 import { CribbContext } from "../CribbContext";
@@ -8,13 +8,15 @@ const AppRoute = ({ component: Component, layout: Layout, ...rest }) => {
   Layout = Layout === undefined ? (props) => <>{props.children}</> : Layout;
   const value = useContext(CribbContext);
 
-  // Checks Requires Auth to proceed
-  if (Component === AddCribb) {
-    let isLoggedIn = value[0].auth;
-    if (!isLoggedIn) {
-      Component = Login;
+  useEffect(() => {
+    // Checks Requires Auth to proceed
+    if (Component === AddCribb) {
+      let isLoggedIn = value[0].auth;
+      if (!isLoggedIn) {
+        Component = Login;
+      }
     }
-  }
+  });
 
   return (
     <Route
