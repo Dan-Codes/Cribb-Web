@@ -37,5 +37,7 @@ CREATE TABLE review_fact_table(
     review_amenities_rating real,
     review_management_rating real,
     review_location_rating real,
+    liveAgain bool,
+    postAnonymously bool,
     r_date DATE
 );

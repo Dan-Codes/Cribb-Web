@@ -5,9 +5,10 @@ export const CribbContext = createContext();
 
 export const CribbProvider = (props) => {
   const [cribb, setCribb] = useState({
-    name: "Daniel",
+    name: "",
     auth: false,
     search: "",
+    user_id: "",
   });
 
   return (

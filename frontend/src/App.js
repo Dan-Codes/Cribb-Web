@@ -10,6 +10,9 @@ import { useLocation, Switch } from "react-router-dom";
 import AppRoute from "./utils/AppRoute";
 import ScrollReveal from "./utils/ScrollReveal";
 import ReactGA from "react-ga";
+import { CribbContext } from "./CribbContext";
+import axios from "axios";
+import "./App.css";
 
 // Layouts
 import { LayoutDefault } from "./layouts/LayoutDefault";
@@ -21,16 +24,12 @@ import AddCribb from "./views/AddCribb";
 import SignUp from "./views/SignUp";
 import Login from "./views/Login";
 import Search from "./views/Search";
-import { CribbContext } from "./CribbContext";
 
-import axios from "axios";
 import ListingController from "./controller/ListingController";
-
-import "./App.css";
+import ReviewController from "./controller/ReviewController";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
-
 const trackPage = (page) => {
   ReactGA.set({ page });
   ReactGA.pageview(page);
@@ -39,6 +38,9 @@ const trackPage = (page) => {
 const App = (props) => {
   const childRef = useRef();
   let location = useLocation();
+
+  const value = useContext(CribbContext);
+  let isLoggedIn = value[0].auth;
 
   useEffect(() => {
     const page = location.pathname;
@@ -70,7 +72,7 @@ const App = (props) => {
           <AppRoute
             exact
             path="/addcribb"
-            component={AddCribb}
+            component={isLoggedIn ? AddCribb : Login}
             layout={LayoutDefault}
           />
           <AppRoute
@@ -94,6 +96,11 @@ const App = (props) => {
           <AppRoute
             path="/listing"
             component={ListingController}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            path="/review"
+            component={ReviewController}
             layout={LayoutDefault}
           />
         </Switch>

@@ -98,6 +98,73 @@ app.post("/addcribb", async (req, res) => {
     console.error(e.message);
   }
 });
+/* review_id SERIAL PRIMARY KEY,
+    address_id INT,
+    user_id INT,
+    zipcode VARCHAR(12),
+    review TEXT,
+    review_overall_rating real,
+    review_amenities_rating real,
+    review_management_rating real,
+    review_location_rating real,
+    r_date DATE*/
+app.post("/review", async (req, res) => {
+  try {
+    var {
+      address,
+      id,
+      user_id,
+      comment,
+      avgoverallrating,
+      location,
+      amenitites,
+      management,
+      liveAgain,
+      postAnonymously,
+    } = req.body;
+    console.log(req.body);
+    if (liveAgain === undefined) {
+      liveAgain = false;
+    }
+    if (postAnonymously === undefined) {
+      postAnonymously === false;
+    }
+    var date = new Date();
+    const newReview = await pool.query(
+      "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating ,review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id) VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10) ON CONFLICT(user_id) DO UPDATE SET review = EXCLUDED.review",
+      [
+        id,
+        comment,
+        avgoverallrating,
+        amenitites,
+        management,
+        location,
+        date,
+        liveAgain,
+        postAnonymously,
+        user_id,
+      ]
+    );
+    res.json(newReview.rows[0]).status(200).send();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/previousReview", async (req, res) => {
+  try {
+    const user_id = req.body.user_id;
+    const review = await pool.query(
+      "SELECT * from review_fact_table WHERE user_id = $1",
+      [user_id]
+    );
+    console.log("USER_ID", req.body);
+    console.log(review.rows);
+    res.json(review.rows).send();
+  } catch (error) {
+    console.error(error.message);
+  }
+});
 
 app.get("/viewCribb", async (req, res) => {
   try {
@@ -218,7 +285,7 @@ app.get("/check_login", async (req, res, next) => {
     if (req.headers.cookie === undefined) {
       res.status(401).send();
     } else {
-      res.send({ Authenticated: true });
+      res.send({ Authenticated: true, user_id: req.signedCookies.user_id });
     }
   } catch (error) {
     console.log(error.message);

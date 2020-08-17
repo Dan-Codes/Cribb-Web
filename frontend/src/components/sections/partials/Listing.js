@@ -14,6 +14,17 @@ function Listing({ address, ...props }) {
   console.log("address: ", address);
 
   const tilesClasses = classNames("tiles-wrap center-content");
+  const history = useHistory();
+  function writeReivew() {
+    console.log("writeReivew Clicked");
+    history.push(
+      `/review/?add=${address.streetaddress}&id=${address.address_id}`,
+      {
+        address: address.streetaddress,
+        id: address.address_id,
+      }
+    );
+  }
   return (
     <>
       <GenericSection className="reveal-from-bottom">
@@ -36,7 +47,7 @@ function Listing({ address, ...props }) {
           </div>
 
           <CommentView></CommentView>
-          <Button color="primary" wide>
+          <Button color="primary" wide onClick={writeReivew}>
             Write a Review
           </Button>
         </div>

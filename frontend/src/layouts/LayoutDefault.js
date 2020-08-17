@@ -6,21 +6,27 @@ import { CribbContext } from "../CribbContext";
 
 export const LayoutDefault = ({ children }) => {
   const [isLoggedin, setisLoggedin] = useState(false);
-  const value = useContext(CribbContext);
-  console.log("this is the context: ", value[0].auth);
+  const [cribbData, setcribbData] = useContext(CribbContext);
+  //console.log("this is the context: ", value);
   useEffect(() => {
     axios
       .get("http://localhost:9000/check_login", { withCredentials: true })
       .then((response) => {
-        console.log("logged in?", response.status);
+        console.log("logged in?", response);
+        console.log("isLoggedin: ", isLoggedin);
         setisLoggedin(true);
-        value[0].auth = true;
+        setcribbData((prevState) => ({
+          ...prevState,
+          auth: true,
+          user_id: response.data.user_id,
+        }));
+        console.log("logged in!", cribbData);
       })
       .catch((error) => {
         console.log("Check login error", error);
-        value[0].auth = false;
-      }, []);
-  });
+        cribbData.auth = false;
+      });
+  }, [isLoggedin]);
   return (
     <>
       {!isLoggedin ? (
