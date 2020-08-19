@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 var validator = require("validator");
 var cookieParser = require("cookie-parser");
 require("dotenv").config();
+var sequelize = require("./sequelize");
+const lodash = require("lodash");
 
 const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
 const SmartyStreetsCore = SmartyStreetsSDK.core;
@@ -26,13 +28,15 @@ app.use(
   })
 ); // req.body type
 
-app.get("/", (req, res) => {
-  const bucket = [
-    { id: 1, firstName: "Daniel", lastName: "Li" },
-    { id: 2, firstName: "Silin", lastName: "Chen" },
-  ];
-
-  res.json(bucket);
+app.get("/", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+    res.json("Connection success");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+    res.json("Unable to connect to DB");
+  }
 });
 
 app.post("/addcribb", async (req, res) => {
@@ -131,7 +135,9 @@ app.post("/review", async (req, res) => {
     }
     var date = new Date();
     const newReview = await pool.query(
-      "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating ,review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id) VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10) ON CONFLICT(user_id) DO UPDATE SET review = EXCLUDED.review",
+      "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating, review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id)" +
+        "VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10) ON CONFLICT (user_id)" +
+        "DO UPDATE SET review = EXCLUDED.review, review_overall_rating= EXCLUDED.review_overall_rating, review_amenities_rating= EXCLUDED.review_amenities_rating, review_management_rating = EXCLUDED.review_management_rating, review_location_rating = EXCLUDED.review_location_rating, r_date = EXCLUDED.r_date, liveAgain = EXCLUDED.liveAgain, postAnonymously=EXCLUDED.postAnonymously  RETURNING *",
       [
         id,
         comment,
@@ -151,18 +157,45 @@ app.post("/review", async (req, res) => {
   }
 });
 
-app.get("/previousReview", async (req, res) => {
+app.get("/passReviews", async (req, res) => {
   try {
-    const user_id = req.body.user_id;
+    const address_id = req.query.address_id;
     const review = await pool.query(
-      "SELECT * from review_fact_table WHERE user_id = $1",
-      [user_id]
+      "SELECT * from review_fact_table INNER JOIN users ON review_fact_table.user_id = users.user_id WHERE review_fact_table.address_id = $1",
+      [address_id]
     );
-    console.log("USER_ID", req.body);
     console.log(review.rows);
-    res.json(review.rows).send();
+    res.json(review.rows);
+    const overallAverage = lodash.meanBy(
+      review.rows,
+      (r) => r.review_overall_rating
+    );
+    const amenitiesAverage = lodash.meanBy(
+      review.rows,
+      (r) => r.review_amenities_rating
+    );
+    const managementAverage = lodash.meanBy(
+      review.rows,
+      (r) => r.review_management_rating
+    );
+    const locationAverage = lodash.meanBy(
+      review.rows,
+      (r) => r.review_location_rating
+    );
+
+    const update = await pool.query(
+      "UPDATE listing SET avgoverallrating = $1, avglocation = $2, avgmanage = $3, avgamenities = $4 WHERE address_id = $5",
+      [
+        overallAverage,
+        locationAverage,
+        managementAverage,
+        amenitiesAverage,
+        address_id,
+      ]
+    );
   } catch (error) {
     console.error(error.message);
+    res.status(500).send();
   }
 });
 
@@ -172,6 +205,21 @@ app.get("/viewCribb", async (req, res) => {
     res.json(allListings.rows);
   } catch (error) {
     console.error(error.message);
+  }
+});
+
+app.get("/listing", async (req, res) => {
+  try {
+    const address_id = req.query.address_id;
+    const listing = await pool.query(
+      "SELECT * from listing WHERE address_id = $1",
+      [address_id]
+    );
+    console.log(listing.rows[0]);
+    res.json(listing.rows);
+  } catch (error) {
+    console.error(error.message);
+    res.status(404).send();
   }
 });
 

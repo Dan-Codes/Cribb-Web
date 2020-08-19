@@ -9,9 +9,16 @@ import { FrownOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
 import CommentView from "./CommentView";
 import ListingRating from "./ListingRating";
 import Button from "../../elements/Button";
+import lodash from "lodash";
 
-function Listing({ address, ...props }) {
+function Listing({ address, reviews, ...props }) {
   console.log("address: ", address);
+  console.log("LISTING REVIEWS", reviews);
+  const [average, setAverage] = useState(address.avgoverallrating);
+  console.log("average overall rating", average);
+  const [location, setLocation] = useState(0);
+  const [amenitites, setAmenitites] = useState(0);
+  const [manage, setManage] = useState(0);
 
   const tilesClasses = classNames("tiles-wrap center-content");
   const history = useHistory();
@@ -32,21 +39,22 @@ function Listing({ address, ...props }) {
           <div className="has-bottom-divider">
             <h1>{address.streetaddress}</h1>
           </div>
-          <Rate allowHalf defaultValue={address.avgoverallrating} disabled />
-          <span className="ant-rate-text">
-            {address.avgoverallrating} Rating
-          </span>
+          <Rate allowHalf value={address.avgoverallrating} disabled />
+          <span className="ant-rate-text">{reviews.length} Rating</span>
           <br></br>
 
           <div className="mb-16">
             <ListingRating
               location={address.avglocation}
-              management={address.manage}
-              amenitites={address.avgamenitites}
+              management={address.avgmanage}
+              amenities={address.avgamenities}
             ></ListingRating>
           </div>
-
-          <CommentView></CommentView>
+          <>
+            {Object.keys(reviews).map((review) => (
+              <CommentView data={reviews[review]}></CommentView>
+            ))}
+          </>
           <Button color="primary" wide onClick={writeReivew}>
             Write a Review
           </Button>

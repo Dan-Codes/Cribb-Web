@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import { FrownOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
 
-function ListingRating({ location, management, amenitites, ...props }) {
+function ListingRating({ location, management, amenities, ...props }) {
   const customIcons = {
     1: <FrownOutlined />,
     2: <FrownOutlined />,
@@ -13,17 +13,19 @@ function ListingRating({ location, management, amenitites, ...props }) {
     5: <SmileOutlined />,
   };
 
+  console.log("location rating", location);
+
   const tilesClasses = classNames("tiles-wrap center-content");
   return (
     <>
       <Row justify="space-around">
         <Col flex="200px">
-          <h4>Amenitites</h4>
+          <h4>Amenities</h4>
           <div>
             <span style={{ whiteSpace: "nowrap" }}>
               <Rate
                 disabled
-                defaultValue={amenitites ? Number(amenitites) : 0}
+                value={amenities ? Number(amenities) : 0}
                 character={({ index }) => {
                   return customIcons[index + 1];
                 }}
@@ -38,7 +40,7 @@ function ListingRating({ location, management, amenitites, ...props }) {
               <Rate
                 disabled
                 style={{ whiteSpace: "nowrap" }}
-                defaultValue={location ? Number(location) : 0}
+                value={location != undefined ? Number(location) : 0}
                 character={({ index }) => {
                   return customIcons[index + 1];
                 }}
@@ -53,7 +55,7 @@ function ListingRating({ location, management, amenitites, ...props }) {
               <Rate
                 disabled
                 style={{ whiteSpace: "nowrap" }}
-                defaultValue={management ? Number(management) : 0}
+                value={management ? Number(management) : 0}
                 character={({ index }) => {
                   return customIcons[index + 1];
                 }}

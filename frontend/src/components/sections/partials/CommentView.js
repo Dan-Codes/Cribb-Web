@@ -8,10 +8,13 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 
-const CommentView = () => {
+const CommentView = ({ data }, ...props) => {
+  console.log("REVIEW DATA", data);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [action, setAction] = useState(null);
+  const AutherName = data.first_name + " " + data.last_name;
+  console.log(data);
 
   const like = () => {
     setLikes(1);
@@ -46,23 +49,19 @@ const CommentView = () => {
   return (
     <Comment
       actions={actions}
-      author={<a>Han Solo</a>}
+      author={
+        <a>{data.postanonymously == undefined ? "Anonymous" : AutherName}</a>
+      }
       avatar={
         <Avatar
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           alt="Han Solo"
         />
       }
-      content={
-        <p>
-          We supply a series of design principles, practical patterns and high
-          quality design resources (Sketch and Axure), to help people create
-          their product prototypes beautifully and efficiently.
-        </p>
-      }
+      content={<p>{data.review}</p>}
       datetime={
         <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-          <span>{moment().fromNow()}</span>
+          <span>{data.r_date}</span>
         </Tooltip>
       }
     />

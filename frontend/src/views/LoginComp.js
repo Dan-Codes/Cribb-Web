@@ -1,121 +1,123 @@
-import React, { Component, useState } from "react";
-import FormLabel from "../components/elements/FormLabel";
-import Input from "../components/elements/Input";
-import Button from "../components/elements/Button";
+import React, { Component, useState, useEffect } from "react";
+// import FormLabel from "../components/elements/FormLabel";
+// import Input from "../components/elements/Input";
+// import Button from "../components/elements/Button";
 import isEmpty from "lodash/isEmpty";
+import { Form, Input, Button, Checkbox, Space } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import validateInput from "../../src/validations/login";
 import axios from "axios";
-import FormHint from "../components/elements/FormHint";
+// import FormHint from "../components/elements/FormHint";
 
-export default class LoginComp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      password: "",
-      errors: {},
-      isLoading: false,
-      showError: false,
-    };
+const LoginComp = (props) => {
+  const stat = {
+    email: "",
+    password: "",
+    errors: {},
+    isLoading: false,
+    showError: false,
+  };
+  const [state, setState] = useState(stat);
+  const [error, setError] = useState(false);
 
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-    //this.onChange = this.isValid.bind(this);
-  }
+  const [form] = Form.useForm();
+  const [, forceUpdate] = useState();
 
-  isValid() {
-    const { errors, isValid } = validateInput(this.state);
+  // To disable submit button at the beginning.
+  useEffect(() => {
+    forceUpdate({});
+  }, []);
+
+  function isValid() {
+    const { errors, isValid } = validateInput(state);
     if (!isValid) {
-      this.setState({ errors });
+      setState({ errors });
       console.log("Empty");
     }
     return isValid;
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    if (this.isValid()) {
-      axios
-        .post("http://localhost:9000/login", this.state, {
-          withCredentials: true,
-        })
-        .then(function (response) {
-          console.log(response);
-          window.location = "/";
-        })
-        .catch((error) => {
-          console.log(error);
-          this.setState({ showError: true });
-        });
-    }
-  }
-  onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-  render() {
-    const { errors, email, password, isLoading } = this.state;
-    return (
-      <>
-        <form onSubmit={this.onSubmit}>
-          <h3>Sign In</h3>
-          {this.state.showError ? (
-            <p className="text-xxs text-color-error">Incorrect Credentials</p>
-          ) : null}
-          <div className="form-group">
-            <FormLabel>Email address</FormLabel>
-            <Input
-              type="email"
-              name="email"
-              className="form-control"
-              placeholder="Enter email"
-              value={this.state.email}
-              hint={errors.email}
-              onChange={this.onChange}
-            />
-          </div>
+  const onFinish = (e) => {
+    //e.preventDefault();
+    console.log(e);
+    axios
+      .post("http://localhost:9000/login", e, {
+        withCredentials: true,
+      })
+      .then(function (response) {
+        console.log(response);
+        window.location = "/";
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(true);
+      });
+  };
 
-          <div className="form-group">
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Enter password"
-              value={this.state.password}
-              hint={errors.password}
-              onChange={this.onChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <div className="custom-control custom-checkbox">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="customCheck1"
-              />
-              <FormLabel
-                className="custom-control-label"
-                htmlFor="customCheck1"
-              >
-                Remember me
-              </FormLabel>
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            className="btn btn-primary btn-block"
-            disabled={isLoading}
+  const onChange = (c) => {
+    setState({ errors: "" });
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Space direction="vertical">
+        {error ? <p>Credentials are Incorrect</p> : ""}
+        <Form
+          name="normal_login"
+          className="login-form"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onChange={onChange}
+          on
+        >
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: "Please input your Email!" }]}
           >
-            Submit
-          </Button>
-          <p className="forgot-password text-right">
-            Forgot <a href="#">password?</a>
-          </p>
-        </form>
-      </>
-    );
-  }
-}
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Email"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your Password!" }]}
+          >
+            <Input
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+
+            <a className="login-form-forgot" href="">
+              Forgot password
+            </a>
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Log in
+            </Button>
+            Or <a href="http://localhost:3000/signup">register now!</a>
+          </Form.Item>
+        </Form>
+      </Space>
+    </div>
+  );
+};
+
+export default LoginComp;
