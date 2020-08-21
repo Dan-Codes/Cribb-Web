@@ -27,6 +27,7 @@ import Search from "./views/Search";
 
 import ListingController from "./controller/ListingController";
 import ReviewController from "./controller/ReviewController";
+import Logout from "./controller/Logout";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -103,6 +104,7 @@ const App = (props) => {
             component={ReviewController}
             layout={LayoutDefault}
           />
+          <AppRoute path="/logout" component={Logout} />
         </Switch>
       )}
     />

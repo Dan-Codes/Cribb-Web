@@ -39,6 +39,23 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/logout", function (req, res) {
+  try {
+    cookie = req.cookies;
+    console.log(cookie);
+    res.cookie("user_id", "", {
+      httpOnly: true,
+      signed: true, //must be true in production
+      secure: false, //must be true in production
+      overwrite: true,
+      maxAge: 0,
+    });
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.post("/addcribb", async (req, res) => {
   try {
     var {
@@ -134,10 +151,11 @@ app.post("/review", async (req, res) => {
       postAnonymously === false;
     }
     var date = new Date();
+    const address_user = "address => " + id + ", user => " + user_id;
     const newReview = await pool.query(
-      "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating, review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id)" +
-        "VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10) ON CONFLICT (user_id)" +
-        "DO UPDATE SET review = EXCLUDED.review, review_overall_rating= EXCLUDED.review_overall_rating, review_amenities_rating= EXCLUDED.review_amenities_rating, review_management_rating = EXCLUDED.review_management_rating, review_location_rating = EXCLUDED.review_location_rating, r_date = EXCLUDED.r_date, liveAgain = EXCLUDED.liveAgain, postAnonymously=EXCLUDED.postAnonymously  RETURNING *",
+      "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating, review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id, address_user)" +
+        "VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10, $11) ON CONFLICT (address_user)" +
+        "DO UPDATE SET review = EXCLUDED.review, review_overall_rating= EXCLUDED.review_overall_rating, review_amenities_rating= EXCLUDED.review_amenities_rating, review_management_rating = EXCLUDED.review_management_rating, review_location_rating = EXCLUDED.review_location_rating, r_date = EXCLUDED.r_date, liveAgain = EXCLUDED.liveAgain, postAnonymously=EXCLUDED.postAnonymously RETURNING *",
       [
         id,
         comment,
@@ -149,11 +167,13 @@ app.post("/review", async (req, res) => {
         liveAgain,
         postAnonymously,
         user_id,
+        address_user,
       ]
     );
     res.json(newReview.rows[0]).status(200).send();
   } catch (error) {
     console.log(error);
+    res.status(404).send();
   }
 });
 

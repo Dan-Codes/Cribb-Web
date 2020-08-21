@@ -29,8 +29,9 @@ CREATE TABLE users(
 
 CREATE TABLE review_fact_table(
     review_id SERIAL PRIMARY KEY,
+    address_user hstore UNIQUE,
     address_id INT,
-    user_id INT UNIQUE,
+    user_id INT,
     zipcode VARCHAR(12),
     review TEXT,
     review_overall_rating real,
@@ -41,3 +42,4 @@ CREATE TABLE review_fact_table(
     postAnonymously bool,
     r_date DATE
 );
+
