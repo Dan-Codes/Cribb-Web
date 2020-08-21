@@ -20,6 +20,8 @@ console.log(credentials);
 let client = SmartyStreetsCore.buildClient.usStreet(credentials);
 
 const app = express();
+
+//Middlewares
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser(`${process.env.REACT_APP_cookie}`));
 app.use(
