@@ -11,17 +11,26 @@ class SignUp extends React.Component {
     return (
       <>
         <div className={classes}>
-          <div className="col-md-4 col-md-offset-4">
-            <GenericSection>
+          <GenericSection>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <LoginForm />
-              <Link
-                to="/login"
-                className="col-md-4 col-md-offset-4 reveal-from-bottom"
-              >
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Link to="/login" className="reveal-from-bottom">
                 Already have an account
               </Link>
-            </GenericSection>
-          </div>
+            </div>
+          </GenericSection>
         </div>
       </>
     );

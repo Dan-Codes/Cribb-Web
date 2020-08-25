@@ -2,7 +2,8 @@ import React, { Component, useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import GenericSection from "../GenericSection";
-import { Rate } from "antd";
+import { Rate, Typography } from "antd";
+
 import classNames from "classnames";
 
 import { FrownOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
@@ -10,8 +11,10 @@ import CommentView from "./CommentView";
 import ListingRating from "./ListingRating";
 import Button from "../../elements/Button";
 import lodash from "lodash";
+import Money from "../../elements/Money";
 
 function Listing({ address, reviews, ...props }) {
+  const { Paragraph } = Typography;
   console.log("address: ", address);
   console.log("LISTING REVIEWS", reviews);
   const [average, setAverage] = useState(address.avgoverallrating);
@@ -39,11 +42,18 @@ function Listing({ address, reviews, ...props }) {
           <div className="has-bottom-divider">
             <h1>{address.streetaddress}</h1>
           </div>
-          <Rate allowHalf value={address.avgoverallrating} disabled />
-          <span className="ant-rate-text">{reviews.length} Rating</span>
-          <br></br>
+          <div className="has-bottom-divider">
+            <Rate allowHalf value={address.avgoverallrating} disabled />
+            <span className="ant-rate-text">({reviews.length})</span>
+            <br></br>
 
-          <div className="mb-16">
+            <div className="mb-18">
+              <Money cost={Number(address.rent)} />
+              {address.phonenumber && <h6>{address.phonenumber}</h6>}
+            </div>
+          </div>
+
+          <div className="has-bottom-divider">
             <ListingRating
               location={address.avglocation}
               management={address.avgmanage}

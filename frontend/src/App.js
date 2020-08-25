@@ -13,6 +13,7 @@ import ReactGA from "react-ga";
 import { CribbContext } from "./CribbContext";
 import axios from "axios";
 import "./App.css";
+import "@fortawesome/fontawesome-free";
 
 // Layouts
 import { LayoutDefault } from "./layouts/LayoutDefault";

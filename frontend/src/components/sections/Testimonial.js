@@ -4,6 +4,7 @@ import { SectionTilesProps } from "../../utils/SectionProps";
 import SectionHeader from "./partials/SectionHeader";
 import axios from "axios";
 import Bucket from "./partials/Bucket";
+import { Space } from "antd";
 
 const propTypes = {
   ...SectionTilesProps.types,
@@ -62,7 +63,7 @@ const Testimonial = ({
       <div className="container">
         <div className={innerClasses}>
           <SectionHeader data={sectionHeader} className="center-content" />
-          <div className={tilesClasses}>
+          <div className={tilesClasses} style={{ display: "flex" }}>
             <Bucket {...props}>{props.children}</Bucket>
           </div>
         </div>

@@ -16,13 +16,13 @@ const defaultProps = {
 
 const Search = ({
   className,
-  children,
   topOuterDivider,
   bottomOuterDivider,
   topDivider,
   bottomDivider,
   hasBgColor,
   invertColor,
+  pushLeft,
   ...props
 }) => {
   const outerClasses = classNames(
@@ -39,6 +39,7 @@ const Search = ({
     topDivider && "has-top-divider",
     bottomDivider && "has-bottom-divider"
   );
+  const tilesClasses = classNames("tiles-wrap", pushLeft && "push-left");
 
   function listingClicked() {}
 
@@ -46,7 +47,9 @@ const Search = ({
     <section {...props} className={outerClasses}>
       <div className="container">
         <div className={innerClasses}>
-          <Testimonial className="reveal-from-bottom"></Testimonial>
+          <Testimonial className="reveal-from-bottom">
+            {props.children}
+          </Testimonial>
         </div>
       </div>
     </section>

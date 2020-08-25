@@ -8,19 +8,16 @@ import CommentView from "../components/sections/partials/CommentView";
 
 function ListingController(props) {
   const str = props.location.pathname;
-  var res = str.split("/");
-  res = res[2].split("&");
-  res = res[0];
-  const id = res[1];
-  //console.log("history", useHistory())
-  console.log("Props ", props.location.state);
+  const res = str.split("&");
+  console.log(res.last);
+  const id = res[res.length - 1];
   const [reviewData, setReviewData] = useState([]);
   const [listingData, setListingData] = useState([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:9000/passReviews", {
-        params: { address_id: props.location.state.address_id },
+        params: { address_id: id },
       })
       .then((response) => {
         console.log(response);
@@ -32,7 +29,7 @@ function ListingController(props) {
 
     axios
       .get("http://localhost:9000/listing", {
-        params: { address_id: props.location.state.address_id },
+        params: { address_id: id },
       })
       .then((response) => {
         console.log("Response data", response.data[0]);

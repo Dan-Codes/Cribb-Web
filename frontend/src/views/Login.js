@@ -10,11 +10,9 @@ class Login extends React.Component {
     return (
       <>
         <div className={classes}>
-          <div className="col-md-4 col-md-offset-4">
-            <GenericSection>
-              <LoginComp />
-            </GenericSection>
-          </div>
+          <GenericSection className="reveal-from-bottom">
+            <LoginComp />
+          </GenericSection>
         </div>
       </>
     );

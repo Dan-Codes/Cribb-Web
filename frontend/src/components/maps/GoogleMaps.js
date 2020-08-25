@@ -16,6 +16,7 @@ import mapsStyle from "../../mapsStyle";
 import Emoji from "../elements/Emoji";
 import house from "../../house.svg";
 import { useEffect } from "react";
+import ListItem from "../sections/partials/ListItem";
 // import sections
 
 const containerStyle = {
@@ -69,6 +70,7 @@ function GoogleMaps() {
   }, []);
 
   markers.map((place) => {
+    var res = encodeURI(place.streetaddress + "&" + place.address_id);
     var contentString =
       '<div onClick={console.log("clicked");} id="content">' +
       '<div id="siteNotice">' +
@@ -81,6 +83,12 @@ function GoogleMaps() {
       place.avgoverallrating +
       "</b></p>" +
       "</div>" +
+      "<a href=" +
+      "listing/" +
+      res +
+      ">" +
+      `View Cribb` +
+      "</a>" +
       "</div>";
     var infowindow = new window.google.maps.InfoWindow({
       content: contentString,
@@ -107,9 +115,6 @@ function GoogleMaps() {
   return (
     <>
       {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_key}> */}
-      <h1>
-        <img src={logo} height="100" width="100"></img>
-      </h1>
 
       <GoogleMap
         mapContainerStyle={containerStyle}
@@ -118,52 +123,7 @@ function GoogleMaps() {
         onLoad={onLoad}
         options={options}
         onUnmount={onUnmount}
-      >
-        {
-          /* Child components, such as markers, info windows, etc. */
-          // markers.map((item) => (
-          //   <Marker
-          //     key={item.address_id}
-          //     position={{ lat: Number(item.lat), lng: Number(item.long) }}
-          //     icon={{
-          //       url: house,
-          //       scaledSize: new window.google.maps.Size(25, 25),
-          //     }}
-          //     onClick={() => {
-          //       setSelected(item);
-          //       console.log(selected);
-          //     }}
-          //   >
-          //     {selected ? (
-          //       <InfoWindow
-          //         position={{ lat: Number(item.lat), lng: Number(item.lng) }}
-          //         onCloseClick={() => {
-          //           setSelected(null);
-          //         }}
-          //       >
-          //         <div>
-          //           <h2>{item.streetaddress}</h2>
-          //           <h3>Average rating: {item.avgoverallrating}</h3>
-          //         </div>
-          //       </InfoWindow>
-          //     ) : null}
-          //   </Marker>
-          // ))
-        }
-        {/* {selected ? (
-          <InfoWindow
-            position={{ lat: Number(selected.lat), lng: Number(selected.lng) }}
-            onCloseClick={() => {
-              setSelected(null);
-            }}
-          >
-            <div>
-              <h2>{selected.streetaddress}</h2>
-              <h3>Average rating: {selected.avgoverallrating}</h3>
-            </div>
-          </InfoWindow>
-        ) : null} */}
-      </GoogleMap>
+      ></GoogleMap>
       {/* </LoadScript> */}
     </>
   );

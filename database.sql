@@ -1,7 +1,7 @@
 CREATE DATABASE cribb;
 
 CREATE TABLE listing(
-    address_id SERIAL PRIMARY KEY,
+    address_id BIGSERIAL PRIMARY KEY,
     addedby VARCHAR(50),
     streetAddress VARCHAR(100),
     city VARCHAR(25),
@@ -19,7 +19,7 @@ CREATE TABLE listing(
 );
 
 CREATE TABLE users(
-    user_id SERIAL PRIMARY KEY,
+    user_id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(25),
     last_name VARCHAR(25),
     email VARCHAR(35),
@@ -28,10 +28,10 @@ CREATE TABLE users(
 );
 
 CREATE TABLE review_fact_table(
-    review_id SERIAL PRIMARY KEY,
+    review_id BIGSERIAL PRIMARY KEY,
     address_user hstore UNIQUE,
-    address_id INT,
-    user_id INT,
+    address_id BIGINT,
+    user_id BIGINT,
     zipcode VARCHAR(12),
     review TEXT,
     review_overall_rating real,

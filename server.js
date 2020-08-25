@@ -62,7 +62,7 @@ app.post("/addcribb", async (req, res) => {
   try {
     var {
       addedby,
-      address,
+      street_address,
       avgAmenities,
       avgManage,
       avgLocation,
@@ -78,7 +78,7 @@ app.post("/addcribb", async (req, res) => {
     console.log(req.body);
 
     //validates address using SmartyStreet API. Response: an object of the Address data
-    const response = await smartyStreet(address, city, state, zip_code);
+    const response = await smartyStreet(street_address, city, state, zip_code);
     console.log("AddressInfo: ", response[0]);
 
     const { deliveryLine1 } = response[0];
@@ -91,7 +91,7 @@ app.post("/addcribb", async (req, res) => {
     console.log("Already in Database: ", alreadyInDB);
 
     //if Cribb is not in the DB yet and address is legit, insert into DB
-    if (alreadyInDB == null && response != null) {
+    if (alreadyInDB == null && response != undefined) {
       const newListing = await pool.query(
         "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14) RETURNING *",
         [
@@ -112,13 +112,18 @@ app.post("/addcribb", async (req, res) => {
         ]
       );
 
-      res.json(newListing.rows[0]);
-    } else {
-      console.log("returning status 500");
-      res.status(500).send();
+      res.status(200).json(newListing.rows[0]);
+    } else if (alreadyInDB != null) {
+      console.log("returning status 409");
+      res.status(409).send();
+    } else if (response == undefined) {
+      console.log("returning status 404 does not exist");
+      res.status(404).send();
     }
   } catch (e) {
     console.error(e.message);
+    console.log("returning status 404 does not exist");
+    res.status(404).send();
   }
 });
 /* review_id SERIAL PRIMARY KEY,
@@ -443,7 +448,6 @@ async function smartyStreet(street, city, state, zip) {
   try {
     return new Promise(function (resolve, reject) {
       let lookup1 = new Lookup();
-      lookup1.inputId = "24601"; // Optional ID from your system
       //lookup1.addressee = "John Doe";
       lookup1.street = street;
       //lookup1.street2 = "closet under the stairs";
@@ -453,10 +457,9 @@ async function smartyStreet(street, city, state, zip) {
       lookup1.state = state;
       lookup1.zipCode = zip;
       lookup1.maxCandidates = 3;
-      lookup1.match = "invalid"; // "invalid" is the most permissive match,
+      //lookup1.match = "invalid"; // "invalid" is the most permissive match,
       // this will always return at least one result even if the address is invalid.
       // Refer to the documentation for additional MatchStrategy options.
-
       let batch = new SmartyStreetsCore.Batch();
       batch.add(lookup1);
 

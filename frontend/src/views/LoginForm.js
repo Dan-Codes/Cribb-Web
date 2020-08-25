@@ -6,6 +6,7 @@ import validateInput from "../../src/validations/login";
 import FormLabel from "../components/elements/FormLabel";
 import axios from "axios";
 import lodash from "lodash";
+import GenericSection from "../components/sections/GenericSection";
 
 class LoginForm extends React.Component {
   constructor(props) {
