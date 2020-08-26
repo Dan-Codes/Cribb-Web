@@ -7,7 +7,7 @@ import GenericSection from "../components/sections/GenericSection";
 
 const Maps = () => {
   const sectionHeader = {
-    title: "Maps",
+    title: "Map",
   };
   return (
     <>

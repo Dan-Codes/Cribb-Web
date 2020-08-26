@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import Logo from "./partials/Logo";
 import axios from "axios";
+import { CribbContext } from "../../CribbContext";
+import SearchBar from "../sections/partials/SearchBar";
 
 const propTypes = {
   navPosition: PropTypes.string,
@@ -31,11 +33,18 @@ const Header = ({
   ...props
 }) => {
   const [isActive, setIsactive] = useState(false);
+  const [cribb, setCribb] = useContext(CribbContext);
+
+  const path = window.location.pathname.substring(1, 7);
+  console.log("path", path);
+  const statusSearch = path == "search" ? true : false;
+  const [search, setSearch] = useState(false);
 
   const nav = useRef(null);
   const hamburger = useRef(null);
 
   useEffect(() => {
+    setSearch(path == "search" ? true : false);
     isActive && openMenu();
     document.addEventListener("keydown", keyPress);
     document.addEventListener("click", clickOutside);
@@ -81,7 +90,7 @@ const Header = ({
 
   return (
     <header {...props} className={classes}>
-      <div className="container">
+      <div className="mr-3 ml-3">
         <div
           className={classNames(
             "site-header-inner",
@@ -106,6 +115,13 @@ const Header = ({
                 className={classNames("header-nav", isActive && "is-active")}
               >
                 <div className="header-nav-inner">
+                  {search == true ? (
+                    <div>
+                      <SearchBar></SearchBar>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   <ul
                     className={classNames(
                       "list-reset text-xs",

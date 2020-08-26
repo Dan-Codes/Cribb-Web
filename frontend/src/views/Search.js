@@ -39,9 +39,15 @@ const Search = ({
     topDivider && "has-top-divider",
     bottomDivider && "has-bottom-divider"
   );
-  const tilesClasses = classNames("tiles-wrap", pushLeft && "push-left");
+  const tilesClasses = classNames(
+    "tiles-wrap center-content",
+    pushLeft && "push-left"
+  );
 
   function listingClicked() {}
+  const sectionHeader = {
+    title: "Search",
+  };
 
   return (
     <section {...props} className={outerClasses}>

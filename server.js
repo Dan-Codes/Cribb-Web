@@ -73,6 +73,7 @@ app.post("/addcribb", async (req, res) => {
       city,
       state,
       zip_code,
+      description,
     } = req.body;
 
     console.log(req.body);
@@ -93,7 +94,7 @@ app.post("/addcribb", async (req, res) => {
     //if Cribb is not in the DB yet and address is legit, insert into DB
     if (alreadyInDB == null && response != undefined) {
       const newListing = await pool.query(
-        "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14) RETURNING *",
+        "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode, description) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14, $15) RETURNING *",
         [
           addedby,
           deliveryLine1,
@@ -109,6 +110,7 @@ app.post("/addcribb", async (req, res) => {
           cityName,
           state,
           zipCode,
+          description,
         ]
       );
 
@@ -210,14 +212,17 @@ app.get("/passReviews", async (req, res) => {
       (r) => r.review_location_rating
     );
 
+    const numOfReviews = review.rowCount;
+
     const update = await pool.query(
-      "UPDATE listing SET avgoverallrating = $1, avglocation = $2, avgmanage = $3, avgamenities = $4 WHERE address_id = $5",
+      "UPDATE listing SET avgoverallrating = $1, avglocation = $2, avgmanage = $3, avgamenities = $4, numofreviews = $6 WHERE address_id = $5",
       [
         overallAverage,
         locationAverage,
         managementAverage,
         amenitiesAverage,
         address_id,
+        numOfReviews,
       ]
     );
   } catch (error) {

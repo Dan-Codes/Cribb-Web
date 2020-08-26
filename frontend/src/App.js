@@ -77,12 +77,7 @@ const App = (props) => {
             component={isLoggedIn ? AddCribb : Login}
             layout={LayoutDefault}
           />
-          <AppRoute
-            exact
-            path="/search"
-            component={Search}
-            layout={LayoutDefault}
-          />
+          <AppRoute path="/search" component={Search} layout={LayoutDefault} />
           <AppRoute
             exact
             path="/signup"

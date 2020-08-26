@@ -11,6 +11,8 @@ import { CribbContext } from "../../../src/CribbContext";
 import Search from "../../views/Search";
 import ReactDOM, { render } from "react-dom";
 import { useHistory } from "react-router-dom";
+import { Formik, Form } from "formik";
+import SearchBar from "./partials/SearchBar";
 
 const propTypes = {
   ...SectionProps.types,
@@ -56,7 +58,7 @@ const Hero = ({
     topDivider && "has-top-divider",
     bottomDivider && "has-bottom-divider"
   );
-  //const [cribb, setCribb] = useContext(CribbContext);
+  const [cribb, setCribb] = useContext(CribbContext);
   //console.log(cribb);
 
   // useEffect(() => {
@@ -66,8 +68,8 @@ const Hero = ({
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      console.log("do validate");
-      history.push("/search");
+      console.log(e);
+      //history.push("/search");
     }
   };
 
@@ -112,27 +114,67 @@ const Hero = ({
             </div>
           </div>
 
-          <div
-            className="mt-32 mb-32 hero-action reveal-from-bottom"
-            data-reveal-delay="450"
+          {/* <Formik
+            initialValues={{ search: "" }}
+            validate={(values) => {
+              const errors = {};
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setSubmitting(true);
+              alert(JSON.stringify(values, null, 2));
+              setCribb({
+                ...cribb,
+                search: values.search,
+              });
+              history.push(`/search/${values.search}`);
+              setSubmitting(false);
+            }}
           >
-            <Input
-              id="search"
-              type="search"
-              label="Query"
-              labelHidden
-              hasIcon="right"
-              placeholder="Find a property"
-              onKeyDown={_handleKeyDown.bind(this)}
-            >
-              <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M9 5H1c-.6 0-1 .4-1 1s.4 1 1 1h8v5l7-6-7-6v5z"
-                  fill="#376DF9"
-                />
-              </svg>
-            </Input>
-          </div>
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <Form>
+                <div
+                  className="mt-32 mb-32 hero-action reveal-from-bottom"
+                  data-reveal-delay="450"
+                >
+                  <Input
+                    id="search"
+                    type="search"
+                    label="Query"
+                    labelHidden
+                    hasIcon="right"
+                    placeholder="Find a property"
+                    //onKeyDown={_handleKeyDown.bind(this)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.search}
+                  >
+                    <svg
+                      type="submit"
+                      width="16"
+                      height="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 5H1c-.6 0-1 .4-1 1s.4 1 1 1h8v5l7-6-7-6v5z"
+                        fill="#376DF9"
+                      />
+                    </svg>
+                  </Input>
+                </div>
+              </Form>
+            )}
+          </Formik> */}
+
+          <SearchBar></SearchBar>
 
           {/* Video  */}
           {/* <div

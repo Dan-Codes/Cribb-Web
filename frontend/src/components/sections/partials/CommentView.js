@@ -7,6 +7,12 @@ import {
   DislikeFilled,
   LikeFilled,
 } from "@ant-design/icons";
+import JavascriptTimeAgo from "javascript-time-ago";
+
+import en from "javascript-time-ago/locale/en";
+import ReactTimeAgo from "react-time-ago";
+import User from "../../elements/User";
+JavascriptTimeAgo.addLocale(en);
 
 const CommentView = ({ data }, ...props) => {
   console.log("REVIEW DATA", data);
@@ -50,18 +56,25 @@ const CommentView = ({ data }, ...props) => {
     <Comment
       actions={actions}
       author={
-        <a>{data.postanonymously == undefined ? "Anonymous" : AutherName}</a>
+        <a>
+          {data.postanonymously == undefined || data.postanonymously == true
+            ? "Anonymous"
+            : AutherName}
+        </a>
       }
-      avatar={
-        <Avatar
-          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-          alt="Han Solo"
-        />
+      avatar={<User style="house"></User>}
+      alt
+      content={
+        <>
+          <div>Amenities: {data.review_amenities_rating}</div>
+          <div>Location: {data.review_location_rating}</div>
+          <div>Management: {data.review_management_rating}</div>
+          <p className="mt-2">{data.review}</p>
+        </>
       }
-      content={<p>{data.review}</p>}
       datetime={
-        <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-          <span>{data.r_date}</span>
+        <Tooltip title={moment().format("MM-DD-YYYY HH:mm:ss")}>
+          <span>{<ReactTimeAgo date={data.r_date} />}</span>
         </Tooltip>
       }
     />

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { Component, useState, useEffect } from "react";
 import classNames from "classnames";
 import { SectionTilesProps } from "../../utils/SectionProps";
 import SectionHeader from "./partials/SectionHeader";
 import Image from "../elements/Image";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const propTypes = {
   ...SectionTilesProps.types,

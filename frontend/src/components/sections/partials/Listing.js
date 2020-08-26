@@ -12,6 +12,8 @@ import ListingRating from "./ListingRating";
 import Button from "../../elements/Button";
 import lodash from "lodash";
 import Money from "../../elements/Money";
+import Phone from "../../elements/Phone";
+import User from "../../elements/User";
 
 function Listing({ address, reviews, ...props }) {
   const { Paragraph } = Typography;
@@ -43,13 +45,22 @@ function Listing({ address, reviews, ...props }) {
             <h1>{address.streetaddress}</h1>
           </div>
           <div className="has-bottom-divider">
+            <div>{address.city + ", " + address.state_id}</div>
+            <div></div>
             <Rate allowHalf value={address.avgoverallrating} disabled />
             <span className="ant-rate-text">({reviews.length})</span>
             <br></br>
 
-            <div className="mb-18">
+            <div className="mb-16">
               <Money cost={Number(address.rent)} />
-              {address.phonenumber && <h6>{address.phonenumber}</h6>}
+            </div>
+            <div>
+              {address.landlord && <User></User>}
+              {address.landlord && " " + address.landlord}
+            </div>
+            <div>
+              {address.phonenumber && <Phone></Phone>}
+              {address.phonenumber && " " + address.phonenumber}
             </div>
           </div>
 

@@ -15,7 +15,9 @@ CREATE TABLE listing(
     long DECIMAL(10,7),
     landlord VARCHAR(50),
     phoneNumber VARCHAR(16),
-    rent VARCHAR(20)
+    rent VARCHAR(20),
+    description VARCHAR(500),
+    numOfReviews BIGINT
 );
 
 CREATE TABLE users(
