@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
 import classNames from "classnames";
 import { SectionTilesProps } from "../../utils/SectionProps";
 import SectionHeader from "./partials/SectionHeader";
@@ -7,6 +7,11 @@ import Bucket from "./partials/Bucket";
 import { useHistory } from "react-router-dom";
 import { Space } from "antd";
 import ListItem from "./partials/ListItem";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import { CribbContext } from "../../CribbContext";
 
 const propTypes = {
   ...SectionTilesProps.types,
@@ -17,6 +22,7 @@ const defaultProps = {
 };
 
 const Testimonial = ({
+  path,
   className,
   topOuterDivider,
   bottomOuterDivider,
@@ -49,21 +55,31 @@ const Testimonial = ({
 
   const sectionHeader = {
     title: "Search Result",
-    paragraph:
-      "Vitae aliquet nec ullamcorper sit amet risus nullam eget felis semper quis lectus nulla at volutpat diam ut venenatis tellus—in ornare.",
+    paragraph: "Any of these cribbs fancy you?",
   };
   const [search, setSearch] = useState();
-
+  const [cribb, setCribb] = useContext(CribbContext);
+  var geolocation;
   useEffect(() => {
-    axios
-      .get(`http://localhost:9000/viewCribb`)
-      .then((result) => {
-        setSearch(result.data);
-      })
-      .catch((err) => console.log(err));
+    async function fetchdata() {
+      await geocodeByAddress(cribb.search)
+        .then((results) => getLatLng(results[0]))
+        .then((latLng) => {
+          console.log("Success 1", latLng);
+          geolocation = latLng;
+        })
+        .catch((error) => console.error("Error", error));
 
-    console.log(props.className);
-  }, []);
+      await axios
+        .get(`http://localhost:9000/viewCribb`, { params: geolocation })
+        .then((result) => {
+          console.log("2");
+          setSearch(result.data);
+        });
+      // .catch((err) => console.log(err));
+    }
+    fetchdata();
+  }, [cribb]);
 
   const history = useHistory();
 

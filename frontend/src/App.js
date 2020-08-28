@@ -97,7 +97,7 @@ const App = (props) => {
           />
           <AppRoute
             path="/review"
-            component={ReviewController}
+            component={isLoggedIn ? ReviewController : Login}
             layout={LayoutDefault}
           />
           <AppRoute path="/logout" component={Logout} />

@@ -233,10 +233,21 @@ app.get("/passReviews", async (req, res) => {
 
 app.get("/viewCribb", async (req, res) => {
   try {
-    const allListings = await pool.query("SELECT * from listing");
+    const { lng, lat } = req.query;
+    console.log(req);
+    var allListings;
+    if (lng === undefined || lat === undefined) {
+      allListings = await pool.query("select * from listing");
+      console.log("Long Lat undefined, returning everything from db");
+    } else {
+      allListings = await pool.query(
+        "select * from listing order by ST_MakePoint($1,$2) <-> listing.geolocation:: geography;",
+        [lng, lat]
+      );
+    }
     res.json(allListings.rows);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
   }
 });
 

@@ -3,18 +3,24 @@ import classNames from "classnames";
 import { Formik, Form } from "formik";
 import Input from "../../elements/Input";
 import { useHistory } from "react-router-dom";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import { CribbContext } from "../../../CribbContext";
 
 const SearchBar = ({ ...props }) => {
   const history = useHistory();
+  const [cribb, setCribb] = useContext(CribbContext);
   return (
     <>
       <Formik
-        initialValues={{ search: "" }}
+        initialValues={{ search: cribb.search }}
         validate={(values) => {
           const errors = {};
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
           //alert(JSON.stringify(values, null, 2));
           // setCribb({

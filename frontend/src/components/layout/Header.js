@@ -36,7 +36,6 @@ const Header = ({
   const [cribb, setCribb] = useContext(CribbContext);
 
   const path = window.location.pathname.substring(1, 7);
-  console.log("path", path);
   const statusSearch = path == "search" ? true : false;
   const [search, setSearch] = useState(false);
 
@@ -44,7 +43,6 @@ const Header = ({
   const hamburger = useRef(null);
 
   useEffect(() => {
-    setSearch(path == "search" ? true : false);
     isActive && openMenu();
     document.addEventListener("keydown", keyPress);
     document.addEventListener("click", clickOutside);
