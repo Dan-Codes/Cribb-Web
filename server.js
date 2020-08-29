@@ -7,7 +7,7 @@ var cookieParser = require("cookie-parser");
 require("dotenv").config();
 var sequelize = require("./sequelize");
 const lodash = require("lodash");
-
+const path = require("path");
 const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
 const SmartyStreetsCore = SmartyStreetsSDK.core;
 const Lookup = SmartyStreetsSDK.usAutocompletePro.Lookup;
@@ -21,7 +21,8 @@ let client = SmartyStreetsCore.buildClient.usStreet(credentials);
 
 const app = express();
 
-//Middlewares
+//Middleware
+
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser(`${process.env.REACT_APP_cookie}`));
 app.use(
@@ -30,16 +31,16 @@ app.use(
   })
 ); // req.body type
 
-app.get("/", async (req, res) => {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-    res.json("Connection success");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-    res.json("Unable to connect to DB");
-  }
-});
+// app.get("/", async (req, res) => {
+//   try {
+//     await sequelize.authenticate();
+//     console.log("Connection has been established successfully.");
+//     res.json("Connection success");
+//   } catch (error) {
+//     console.error("Unable to connect to the database:", error);
+//     res.json("Unable to connect to DB");
+//   }
+// });
 
 app.get("/logout", function (req, res) {
   try {
@@ -383,6 +384,22 @@ app.get("/check_login", async (req, res, next) => {
   }
 });
 
+app.get("/profile", async (req, res) => {
+  try {
+    const user_id = req.signedCookies.user_id.toString();
+    console.log(user_id);
+    const profile = await pool.query(
+      "Select * from review_fact_table INNER JOIN users ON review_fact_table.user_id = users.user_id WHERE review_fact_table.user_id = $1",
+      [user_id]
+    );
+    console.log(profile.rows);
+    res.json(profile.rows).send();
+  } catch (error) {
+    console.log(error);
+    res.status(404).send();
+  }
+});
+
 app.get("/getReviews", async (req, res, next) => {
   try {
     const addressID = req.body.address_id;
@@ -392,6 +409,7 @@ app.get("/getReviews", async (req, res, next) => {
     );
   } catch (error) {
     console.log(error.message);
+    res.status(404).send();
   }
 });
 
@@ -496,6 +514,11 @@ async function smartyStreet(street, city, state, zip) {
     console.error(error.message);
   }
 }
+
+app.use(express.static("frontend/build"));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});
 
 const port = 9000;
 
