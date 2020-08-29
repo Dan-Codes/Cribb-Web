@@ -23,7 +23,7 @@ const app = express();
 
 //Middleware
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(cookieParser(`${process.env.REACT_APP_cookie}`));
 app.use(
   express.json({
