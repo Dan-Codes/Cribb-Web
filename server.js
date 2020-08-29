@@ -21,8 +21,9 @@ let client = SmartyStreetsCore.buildClient.usStreet(credentials);
 
 const app = express();
 
-//Middleware
+const port = process.env.PORT || 9000;
 
+//Middleware
 app.use(cors({ origin: "*", credentials: true }));
 app.use(cookieParser(`${process.env.REACT_APP_cookie}`));
 app.use(
@@ -95,7 +96,7 @@ app.post("/addcribb", async (req, res) => {
     //if Cribb is not in the DB yet and address is legit, insert into DB
     if (alreadyInDB == null && response != undefined) {
       const newListing = await pool.query(
-        "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode, description) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14, $15) RETURNING *",
+        "INSERT INTO listing (addedby,streetaddress,avgAmenities,avgManage,avgLocation,avgOverallRating, lat, long, landlord, phonenumber, rent, city, state_id, zipcode, description, geolocation) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12, $13, $14, $15, ST_MakePoint($16,$17)) RETURNING *",
         [
           addedby,
           deliveryLine1,
@@ -112,6 +113,8 @@ app.post("/addcribb", async (req, res) => {
           state,
           zipCode,
           description,
+          longitude,
+          latitude,
         ]
       );
 
@@ -120,7 +123,7 @@ app.post("/addcribb", async (req, res) => {
       console.log("returning status 409");
       res.status(409).send();
     } else if (response == undefined) {
-      console.log("returning status 404 does not exist");
+      console.log("returning status 404 error inserting into db");
       res.status(404).send();
     }
   } catch (e) {
@@ -517,13 +520,12 @@ async function smartyStreet(street, city, state, zip) {
 
 if (process.env.NODE_ENV == "production") {
   app.use(express.static(path.join(__dirname, "frontend/build")));
+} else {
+  app.use(express.static("./frontend/build"));
 }
 
-app.use(express.static("./frontend/build"));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend/build/index.html"));
 });
-
-const port = process.env.PORT || 9000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

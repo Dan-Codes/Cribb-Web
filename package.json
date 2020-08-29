@@ -7,7 +7,7 @@
     "server": "nodemon server.js",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "start": "npm start",
+    "start": "node server",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "engines": {
