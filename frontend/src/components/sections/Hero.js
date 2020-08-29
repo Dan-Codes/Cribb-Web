@@ -6,7 +6,6 @@ import Button from "../elements/Button";
 import Image from "../elements/Image";
 import Modal from "../elements/Modal";
 import Input from "../elements/Input";
-import Bucket from "./partials/Bucket";
 import { CribbContext } from "../../../src/CribbContext";
 import Search from "../../views/Search";
 import ReactDOM, { render } from "react-dom";
