@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { SectionTilesProps } from "../../utils/SectionProps";
 import SectionHeader from "./partials/SectionHeader";
 import axios from "axios";
-import Bucket from "./partials/Bucket";
+//import Bucket from "./partials/Bucket";
 import { useHistory } from "react-router-dom";
 import { Space } from "antd";
 import ListItem from "./partials/ListItem";
