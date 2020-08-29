@@ -10,7 +10,7 @@ export const LayoutDefault = ({ children }) => {
   //console.log("this is the context: ", value);
   useEffect(() => {
     axios
-      .get("http://localhost:9000/check_login", { withCredentials: true })
+      .get("/check_login", { withCredentials: true })
       .then((response) => {
         console.log("logged in?", response);
         console.log("isLoggedin: ", isLoggedin);

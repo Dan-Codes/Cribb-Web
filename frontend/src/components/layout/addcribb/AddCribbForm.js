@@ -91,10 +91,7 @@ export default class AddCribbForm extends React.Component {
     try {
       const body = this.state;
       console.log(e);
-      const response = await Axios.post(
-        "http://localhost:9000/addcribb",
-        body
-      ).then((res) => {
+      const response = await Axios.post("/addcribb", body).then((res) => {
         if (res.status == 409) {
           this.setState({ exists: true });
         } else if (res.status == 404) {
@@ -147,10 +144,7 @@ export default class AddCribbForm extends React.Component {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             //alert(JSON.stringify(values, null, 2));
-            const response = await Axios.post(
-              "http://localhost:9000/addcribb",
-              values
-            )
+            const response = await Axios.post("/addcribb", values)
               .then((res) => {
                 if (res.status == 200) {
                   window.location = "/maps";

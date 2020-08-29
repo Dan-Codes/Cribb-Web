@@ -59,7 +59,7 @@ function GoogleMaps() {
     setMap(map);
 
     await axios
-      .get("http://localhost:9000/viewCribb")
+      .get("/viewCribb")
       .then((result) => {
         console.log("database call response: ", result.data);
         setMarkers(result.data);

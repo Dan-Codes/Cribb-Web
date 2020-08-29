@@ -136,6 +136,13 @@ const Header = ({
                         Add a Cribb
                       </Link>
                     </li>
+                    {hideSignin && (
+                      <li>
+                        <Link to="/profile" onClick={closeMenu}>
+                          Profile
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                   {!hideSignin && (
                     <ul className="list-reset header-nav-right">

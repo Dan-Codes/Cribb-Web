@@ -42,7 +42,7 @@ const LoginComp = (props) => {
     //e.preventDefault();
     console.log(e);
     axios
-      .post("http://localhost:9000/login", e, {
+      .post("/login", e, {
         withCredentials: true,
       })
       .then(function (response) {

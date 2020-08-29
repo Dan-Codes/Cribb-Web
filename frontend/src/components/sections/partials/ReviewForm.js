@@ -40,7 +40,7 @@ function ReviewForm(props) {
     values.user_id = user_id;
     console.log(values);
     await axios
-      .post("http://localhost:9000/review", values)
+      .post("/review", values)
       .then((res) => {
         console.log("response", res);
         history.goBack();

@@ -12,6 +12,8 @@ import JavascriptTimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import ReactTimeAgo from "react-time-ago";
 import User from "../../elements/User";
+import "./CommentView.css";
+
 JavascriptTimeAgo.addLocale(en);
 
 const CommentView = ({ data }, ...props) => {
@@ -35,13 +37,13 @@ const CommentView = ({ data }, ...props) => {
   };
 
   const actions = [
-    <Tooltip key="comment-basic-like" title="Like">
+    <Tooltip key="comment-basic-like" title="Like" color="cyan">
       <span onClick={like}>
         {createElement(action === "liked" ? LikeFilled : LikeOutlined)}
         <span className="comment-action">{likes}</span>
       </span>
     </Tooltip>,
-    <Tooltip key="comment-basic-dislike" title="Dislike">
+    <Tooltip key="comment-basic-dislike" title="Dislike" color="cyan">
       <span onClick={dislike}>
         {React.createElement(
           action === "disliked" ? DislikeFilled : DislikeOutlined
@@ -49,7 +51,9 @@ const CommentView = ({ data }, ...props) => {
         <span className="comment-action">{dislikes}</span>
       </span>
     </Tooltip>,
-    <span key="comment-basic-reply-to">Reply to</span>,
+    <span key="comment-basic-reply-to" color="cyan">
+      Reply to
+    </span>,
   ];
 
   return (

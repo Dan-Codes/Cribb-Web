@@ -41,7 +41,7 @@ class LoginForm extends React.Component {
     this.setState({ showError: false, invalidInput: false });
     if (this.isValid()) {
       axios
-        .post("http://localhost:9000/signup", this.state)
+        .post("/signup", this.state)
         .then((response) => {
           console.log(response);
           const status = response.status;

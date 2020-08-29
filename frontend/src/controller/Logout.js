@@ -7,7 +7,7 @@ function Logout(props) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9000/logout", {
+      .get("/logout", {
         withCredentials: true,
       })
       .then((response) => {

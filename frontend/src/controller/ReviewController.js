@@ -17,11 +17,9 @@ function ReviewController(props) {
   useEffect(() => {
     const user_id = cribb[0];
     console.log("Cribb Context", user_id);
-    axios
-      .get("http://localhost:9000/previousReview", { user_id })
-      .then((response) => {
-        console.log("REsponse from ReviewController", response.data);
-      });
+    axios.get("/previousReview", { user_id }).then((response) => {
+      console.log("REsponse from ReviewController", response.data);
+    });
   }, []);
 
   return (

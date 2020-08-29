@@ -16,7 +16,7 @@ function ListingController(props) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9000/passReviews", {
+      .get("/passReviews", {
         params: { address_id: id },
       })
       .then((response) => {
@@ -28,7 +28,7 @@ function ListingController(props) {
       });
 
     axios
-      .get("http://localhost:9000/listing", {
+      .get("/listing", {
         params: { address_id: id },
       })
       .then((response) => {

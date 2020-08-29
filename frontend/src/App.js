@@ -29,6 +29,7 @@ import Search from "./views/Search";
 import ListingController from "./controller/ListingController";
 import ReviewController from "./controller/ReviewController";
 import Logout from "./controller/Logout";
+import ProfileController from "./controller/ProfileController";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -93,6 +94,11 @@ const App = (props) => {
           <AppRoute
             path="/listing"
             component={ListingController}
+            layout={LayoutDefault}
+          />
+          <AppRoute
+            path="/profile"
+            component={ProfileController}
             layout={LayoutDefault}
           />
           <AppRoute
