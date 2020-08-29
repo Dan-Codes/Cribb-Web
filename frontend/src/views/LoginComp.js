@@ -112,7 +112,7 @@ const LoginComp = (props) => {
             >
               Log in
             </Button>
-            Or <a href="http://localhost:3000/signup">register now!</a>
+            Or <a href="/signup">register now!</a>
           </Form.Item>
         </Form>
       </Space>

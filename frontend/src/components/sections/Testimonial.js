@@ -70,12 +70,10 @@ const Testimonial = ({
         })
         .catch((error) => console.error("Error", error));
 
-      await axios
-        .get(`http://localhost:9000/viewCribb`, { params: geolocation })
-        .then((result) => {
-          console.log("2");
-          setSearch(result.data);
-        });
+      await axios.get(`/viewCribb`, { params: geolocation }).then((result) => {
+        console.log("2");
+        setSearch(result.data);
+      });
       // .catch((err) => console.log(err));
     }
     fetchdata();
