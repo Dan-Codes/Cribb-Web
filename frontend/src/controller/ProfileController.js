@@ -18,7 +18,7 @@ function ProfileController(props) {
         console.log(error);
       });
   }, []);
-  return <>Profile</>;
+  return <></>;
 }
 
 export default ProfileController;
