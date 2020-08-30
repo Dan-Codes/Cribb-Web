@@ -69,11 +69,11 @@ const FeaturesTiles = ({
                   </div>
                 </div>
                 <div className="features-tiles-item-content">
-                  <h4 className="mt-0 mb-8">House Parties</h4>
+                  <h4 className="mt-0 mb-8">Location</h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
+                    At Cribb, we understand that Location is very important
+                    which is why we included it as a key measurement of a
+                    Cribb's rating.
                   </p>
                 </div>
               </div>
@@ -95,11 +95,10 @@ const FeaturesTiles = ({
                   </div>
                 </div>
                 <div className="features-tiles-item-content">
-                  <h4 className="mt-0 mb-8">Homie Quiet Cribbs</h4>
+                  <h4 className="mt-0 mb-8">Amenities</h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
+                    Why settle for anything less than Wifi, Washer, Dryer, Air
+                    conditioning, Hot water and essentials.
                   </p>
                 </div>
               </div>
@@ -121,11 +120,10 @@ const FeaturesTiles = ({
                   </div>
                 </div>
                 <div className="features-tiles-item-content">
-                  <h4 className="mt-0 mb-8">Greek Life</h4>
+                  <h4 className="mt-0 mb-8">Management</h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
+                    Management is a tough cookie to crack sometimes, you can
+                    tell us all about it or read up on reviews about it.
                   </p>
                 </div>
               </div>
@@ -144,12 +142,8 @@ const FeaturesTiles = ({
                   </div>
                 </div>
                 <div className="features-tiles-item-content">
-                  <h4 className="mt-0 mb-8">Secure Payment</h4>
-                  <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
-                  </p>
+                  <h4 className="mt-0 mb-8">Responsive Dark Mode</h4>
+                  <p className="m-0 text-sm">Say less. </p>
                 </div>
               </div>
             </div>
@@ -171,11 +165,7 @@ const FeaturesTiles = ({
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">No Extra Fees</h4>
-                  <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
-                  </p>
+                  <p className="m-0 text-sm">Appreciate Free!</p>
                 </div>
               </div>
             </div>
@@ -198,9 +188,8 @@ const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">24/7 Customer Service</h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat.
+                    Got a problem you need to resolve, no problem, we're here to
+                    help!
                   </p>
                 </div>
               </div>
