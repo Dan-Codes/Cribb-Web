@@ -72,7 +72,7 @@ function GoogleMaps() {
   markers.map((place) => {
     var res = encodeURI(place.streetaddress + "&" + place.address_id);
     var contentString =
-      '<div onClick={console.log("clicked");} id="content">' +
+      '<div onClick={console.log("clicked");} id="content" className="bg-dark">' +
       '<div id="siteNotice">' +
       "</div>" +
       '<h1 id="firstHeading" class="firstHeading">' +
@@ -92,6 +92,7 @@ function GoogleMaps() {
       "</div>";
     var infowindow = new window.google.maps.InfoWindow({
       content: contentString,
+      classNames: "bg-black",
     });
 
     var marker = new window.google.maps.Marker({

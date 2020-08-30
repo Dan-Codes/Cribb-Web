@@ -17,7 +17,10 @@ const ListItem = ({ tilesClasses, listing, ...props }) => {
   return (
     <>
       <div className="tiles-item-content" {...props}>
-        <div className="card container" style={{ width: "16rem" }}>
+        <div
+          className="card container bg-dark text-white"
+          style={{ width: "16rem", backgroundColor: "dark" }}
+        >
           <img className="card-img-top"></img>
           <div className="card-body">
             <h5 className="card-title">{listing.streetaddress}</h5>

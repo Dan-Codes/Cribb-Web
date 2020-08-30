@@ -17,8 +17,11 @@ CREATE TABLE listing(
     phoneNumber VARCHAR(16),
     rent VARCHAR(20),
     description VARCHAR(500),
-    numOfReviews BIGINT
+    numOfReviews BIGINT,
+    geolocation geography;
 );
+
+create index on listing USING gist(geolocation);
 
 CREATE TABLE users(
     user_id BIGSERIAL PRIMARY KEY,
@@ -44,4 +47,10 @@ CREATE TABLE review_fact_table(
     postAnonymously bool,
     r_date DATE
 );
+
+CREATE INDEX on 
+
+select * from listing where ST_DWithin(listing.geolocation, ST_MakePoint(74, 40)::geography, 100000) order by listing.geolocation <> ST_MakePoint(74, 40)::geography;
+select * from listing order by ST_MakePoint(74,40) <-> listing.geolocation:: geography DESC;
+
 
