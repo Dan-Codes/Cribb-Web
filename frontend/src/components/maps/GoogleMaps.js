@@ -7,6 +7,7 @@ import {
   LoadScript,
   Marker,
   InfoWindow,
+  InfoBox,
 } from "@react-google-maps/api";
 import "./GoogleMaps.css";
 import axios from "axios";
@@ -53,32 +54,38 @@ function GoogleMaps() {
     }
   });
 
-  const onLoad = React.useCallback(async (map) => {
-    const bounds = new window.google.maps.LatLngBounds();
-    //map.fitBounds(bounds);
-    setMap(map);
+  const onLoad = React.useCallback(
+    async (map) => {
+      const bounds = new window.google.maps.LatLngBounds();
+      //map.fitBounds(bounds);
+      setMap(map);
+      await axios
+        .get("/viewCribb")
+        .then((result) => {
+          console.log("database call response: ", result.data);
+          setMarkers(result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    [markers]
+  );
 
-    await axios
-      .get("/viewCribb")
-      .then((result) => {
-        console.log("database call response: ", result.data);
-        setMarkers(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null);
   }, []);
 
-  markers.map((place) => {
+  markers.map(async (place) => {
     var res = encodeURI(place.streetaddress + "&" + place.address_id);
     var contentString =
-      '<div onClick={console.log("clicked");} id="content" className="bg-dark">' +
-      '<div id="siteNotice">' +
+      '<div onClick={console.log("clicked");} id="content" class="card container bg-dark text-white">' +
+      '<div id="siteNotice" class="card-body">' +
       "</div>" +
-      '<h1 id="firstHeading" class="firstHeading">' +
+      '<h5 id="card-title" class="card-title">' +
       place.streetaddress +
-      "</h1>" +
-      '<div id="bodyContent">' +
+      "</h5>" +
+      '<div id="bodyContent" class="card-text">' +
       "<p>Rating: <b>" +
       place.avgoverallrating +
       "</b></p>" +
@@ -92,7 +99,6 @@ function GoogleMaps() {
       "</div>";
     var infowindow = new window.google.maps.InfoWindow({
       content: contentString,
-      classNames: "bg-black",
     });
 
     var marker = new window.google.maps.Marker({
@@ -108,10 +114,6 @@ function GoogleMaps() {
       infowindow.open(map, marker);
     });
   });
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null);
-  }, []);
 
   return (
     <>
