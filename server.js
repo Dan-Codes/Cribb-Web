@@ -167,7 +167,7 @@ app.post("/review", async (req, res) => {
     const address_user = "address => " + id + ", user => " + user_id;
     const newReview = await pool.query(
       "INSERT into review_fact_table (address_id, review, review_overall_rating, review_amenities_rating, review_management_rating, review_location_rating, r_date, liveAgain, postAnonymously, user_id, address_user)" +
-        "VALUES($1,$2,$3,$4,$5, $6, $7,$8,$9,$10, $11) ON CONFLICT (address_user)" +
+        "VALUES($1,$2,$3,$4,$5, $6, CURRENT_TIMESTAMP,$7,$8,$9, $10) ON CONFLICT (address_user)" +
         "DO UPDATE SET review = EXCLUDED.review, review_overall_rating= EXCLUDED.review_overall_rating, review_amenities_rating= EXCLUDED.review_amenities_rating, review_management_rating = EXCLUDED.review_management_rating, review_location_rating = EXCLUDED.review_location_rating, r_date = EXCLUDED.r_date, liveAgain = EXCLUDED.liveAgain, postAnonymously=EXCLUDED.postAnonymously RETURNING *",
       [
         id,
@@ -176,7 +176,6 @@ app.post("/review", async (req, res) => {
         amenitites,
         management,
         location,
-        date,
         liveAgain,
         postAnonymously,
         user_id,
